@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MultiViews",
+        "repositoryURL": "https://github.com/heestand-xyz/MultiViews.git",
+        "state": {
+          "branch": null,
+          "revision": "a365e18dd41bf27b9ef2650327a00bd0c3d8c8a3",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "package": "PixelColor",
+        "repositoryURL": "https://github.com/heestand-xyz/PixelColor.git",
+        "state": {
+          "branch": null,
+          "revision": "dd52d2bb6c8fd4f2c10051133600a0a620520336",
+          "version": "1.1.2"
+        }
+      },
+      {
+        "package": "PolyKit",
+        "repositoryURL": "https://github.com/heestand-xyz/PolyKit.git",
+        "state": {
+          "branch": null,
+          "revision": "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
+          "version": "1.0.3"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
