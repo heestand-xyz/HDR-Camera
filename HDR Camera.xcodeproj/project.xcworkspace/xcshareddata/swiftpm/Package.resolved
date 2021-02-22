@@ -20,12 +20,30 @@
         }
       },
       {
+        "package": "PixelKit",
+        "repositoryURL": "https://github.com/heestand-xyz/PixelKit.git",
+        "state": {
+          "branch": "lite",
+          "revision": "c9089d4afa9c783af97dddc4364fce4b2359c938",
+          "version": null
+        }
+      },
+      {
         "package": "PolyKit",
         "repositoryURL": "https://github.com/heestand-xyz/PolyKit.git",
         "state": {
           "branch": null,
           "revision": "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
           "version": "1.0.3"
+        }
+      },
+      {
+        "package": "RenderKit",
+        "repositoryURL": "https://github.com/heestand-xyz/RenderKit.git",
+        "state": {
+          "branch": "lite",
+          "revision": "c656d9252da736db77a67250e6f6b2b1fdc75b65",
+          "version": null
         }
       }
     ]

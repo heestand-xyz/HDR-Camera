@@ -11,14 +11,31 @@ import SwiftUI
 
 class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
 
-    let captureSession: AVCaptureSession = .init()
+    private let captureSession: AVCaptureSession = .init()
     
-    var backCamera: AVCaptureDevice?
-    var frontCamera: AVCaptureDevice?
-    var backInput: AVCaptureInput?
-    var frontInput: AVCaptureInput?
+    private var backCamera: AVCaptureDevice?
+    private var frontCamera: AVCaptureDevice?
+    private var backInput: AVCaptureInput?
+    private var frontInput: AVCaptureInput?
 
-    var photoOutput: AVCapturePhotoOutput?
+    private var photoOutput: AVCapturePhotoOutput?
+    
+    private let exposureValues: [Float] = [-2.0, 0.0, 2.0]
+    private var capturedImages: [UIImage]?
+    private var competionHandler: ((Result<[UIImage], CameraError>) -> ())?
+    
+    enum CameraError: LocalizedError {
+        case captureFailed(String)
+        case captureFailedWithError(Error)
+        var errorDescription: String? {
+            switch self {
+            case .captureFailed(let info):
+                return "Camera Capture Failed: \(info)"
+            case .captureFailedWithError(let error):
+                return "Camera Capture Failed with Error: \(error.localizedDescription)"
+            }
+        }
+    }
 
     override init() {
         super.init()
@@ -75,23 +92,46 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
     // MARK: - Capture
     
-    func capture() {
+    func capture(completion: @escaping (Result<[UIImage], CameraError>) -> ()) {
         
         guard let photoOutput: AVCapturePhotoOutput = photoOutput else { return }
-        
-        let captureSettigns = AVCapturePhotoSettings()
-        
-        let exposureValues: [Float] = [-2, 0, +2]
+                
         let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
         let exposureSettings = exposureValues.map(makeAutoExposureSettings)
+        
+//        let exposureSettings = [
+//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(0.01), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
+//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(0.1), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
+//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
+//        ]
         
         let photoSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
                                                           processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
                                                           bracketedSettings: exposureSettings)
         photoSettings.isLensStabilizationEnabled = photoOutput.isLensStabilizationDuringBracketedCaptureSupported
 
-        photoOutput.capturePhoto(with: captureSettigns, delegate: self)
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
         
+        capturedImages = []
+        competionHandler = completion
+        
+    }
+    
+    private func captured(error: Error?) {
+        guard error == nil else {
+            competionHandler?(.failure(.captureFailedWithError(error!)))
+            return
+        }
+        guard let images: [UIImage] = capturedImages else {
+            competionHandler?(.failure(.captureFailed("No Images Found")))
+            return
+        }
+        defer { capturedImages = nil }
+        guard !images.isEmpty else {
+            competionHandler?(.failure(.captureFailed("Image Count is Zero")))
+            return
+        }
+        competionHandler?(.success(images))
     }
     
     // MARK: - Capture Delegate
@@ -109,11 +149,17 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        print("PHOTO didFinishProcessingPhoto", photo.photoCount, photo.sequenceCount)
+        print("PHOTO didFinishProcessingPhoto", photo.photoCount)
+        if let imageData: Data = photo.fileDataRepresentation() {
+            if let image: UIImage = UIImage(data: imageData){
+                capturedImages?.append(image)
+            }
+        }
+        
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
-        print("PHOTO didFinishCaptureFor")
+        captured(error: error)
     }
     
 }

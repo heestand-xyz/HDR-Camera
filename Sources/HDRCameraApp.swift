@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct HDR_EditorApp: App {
+struct HDRCameraApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
