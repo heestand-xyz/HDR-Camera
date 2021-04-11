@@ -1,62 +1,263 @@
 //
 //  HDRCamera.swift
-//  HDR Editor
+//  Layer Camera
 //
-//  Created by Anton Heestand on 2021-02-15.
+//  Created by Anton Heestand on 2021-02-13.
+//  Copyright © 2021 Hexagons. All rights reserved.
 //
 
 import Foundation
-import CoreGraphics
-import MultiViews
+import UIKit
 import RenderKit
 import PixelKit
+import SwiftUI
+import MultiViews
+import AVKit
 
-class HDRCamera: ObservableObject {
-    
-    let hdr: HDR = .init()
-    let camera: Camera = .init()
-    
-    enum State {
-        case live
-        case capture
-        case edit
-    }
-    @Published var state: State = .live
-    
-    @Published var images: [MPImage] = []
+class HDRCamera: NSObject, ObservableObject {
 
+    static let version: String = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+
+    let alertCenter: AlertCenter = .init()
+    
+//    #if DEBUG
+//    let cameraPix: ImagePIX
+//    #else
     let cameraPix: CameraPIX
+//    #endif
+    let thumbnailPix: ResolutionPIX
+    let layerPix: NilPIX
     let finalPix: PIX
+    
+    @Published private(set) var capturedImages: [(id: UUID, image: UIImage)] = []
+    @Published var animatedImageIDs: [UUID] = []
 
-    init() {
-
+    enum CameraControl {
+        case none
+        case light
+        case focus
+    }
+    @Published var cameraControl: CameraControl = .none
+    
+    #if !targetEnvironment(macCatalyst)
+    @Published var manualLight: Bool = false {
+        didSet {
+            cameraPix.manualExposure = manualLight
+        }
+    }
+    @Published var lightExposure: CGFloat = 0.5 {
+        didSet {
+            cameraPix.exposure = lightExposure
+        }
+    }
+    @Published var lightISO: CGFloat = 0.5 {
+        didSet {
+            cameraPix.iso = lightISO
+        }
+    }
+    @Published var manualFocus: Bool = false {
+        didSet {
+            cameraPix.manualFocus = manualFocus
+        }
+    }
+    @Published var focus: CGFloat = 0.5 {
+        didSet {
+            cameraPix.focus = focus
+        }
+    }
+    #endif
+    
+    #if !targetEnvironment(macCatalyst)
+    enum Camera: Equatable {
+        enum Back: Equatable {
+            case ultraWide
+            case wide
+            case tele
+        }
+        case back(Back)
+        case front
+        var value: CameraPIX.Camera {
+            switch self {
+            case .back(let back):
+                switch back {
+                case .ultraWide:
+                    return .ultraWide
+                case .wide:
+                    return .back
+                case .tele:
+                    return .tele
+                }
+            case .front:
+                return .front
+            }
+        }
+        var xFactor: CGFloat {
+            switch self {
+            case .back(let back):
+                switch back {
+                case .ultraWide:
+                    return 0.5
+                case .wide:
+                    return 1.0
+                case .tele:
+                    return 2.0
+                }
+            case .front:
+                return 1.0
+            }
+        }
+        static var hasUltrawide: Bool {
+            AVCaptureDevice.default(.builtInUltraWideCamera, for: AVMediaType.video, position: .back) != nil
+        }
+        static var hasTele: Bool {
+            AVCaptureDevice.default(.builtInTelephotoCamera, for: AVMediaType.video, position: .back) != nil
+        }
+    }
+    @Published var camera: Camera = .back(.wide) {
+        didSet {
+            cameraPix.camera = camera.value
+        }
+    }
+    #endif
+    
+    @Published var shutter: ShutterOpen = .mid
+    
+    static let thumbnailSize = CGSize(width: 200 / (16 / 9), height: 200)
+    
+    // MARK: - Life Cycle -
+    
+    override init() {
+        
+//        #if DEBUG
+//        cameraPix = ImagePIX()
+//        cameraPix.image = UIImage(named: "TestC")!
+//        #else
         cameraPix = CameraPIX()
-        finalPix = cameraPix.pixGamma(0.5)
+//        #endif
+        cameraPix.view.placement = .fill
+        
+        thumbnailPix = ResolutionPIX(at: .size(HDRCamera.thumbnailSize) * UIScreen.main.scale)
+        thumbnailPix.input = cameraPix
+        thumbnailPix.placement = .fill
+        thumbnailPix.bypass = true
+        
+        layerPix = NilPIX()
+        layerPix.input = cameraPix
+        
+        finalPix = layerPix
+        finalPix.view.placement = .fill
+        finalPix.view.checker = false
+        
+        super.init()
+        
+        listenToApp()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateVolume), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
         
     }
     
-    func capture() {
-        state = .capture
-        cameraPix.active = false
-        camera.capture { result in
-            switch result {
-            case .success(let images):
-                print("CAPTURE", images.count)
-                self.hdr.load(images: images)
-                self.images = images
-                self.state = .edit
-            case .failure(let error):
-                print("FAILED", error)
-                self.state = .live
+    // MARK: - App State
+    
+    #if os(iOS)
+    
+    func listenToApp() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        
+    }
+    
+    @objc func didBecomeActive() {
+        
+    }
+    
+    @objc func willResignActive() {
+        
+    }
+    
+    @objc func willEnterForeground() {
+        
+    }
+    
+    @objc func didEnterBackground() {
+        capturedImages = []
+        animatedImageIDs = []
+    }
+    
+    #endif
+    
+    // MARK: - Camera
+    
+    func capturePhoto(with interaction: MVInteraction = .endedInside) {
+        
+        switch interaction {
+        case .started:
+            
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            
+            withAnimation(.easeInOut(duration: 0.25)) {
+                shutter = .max
             }
-            self.cameraPix.active = true
+            
+            return
+            
+        case .endedInside:
+            
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            
+            withAnimation(.easeInOut(duration: 0.15)) {
+                shutter = .min
+            }
+            RunLoop.current.add(Timer(timeInterval: 0.15, repeats: false, block: { _ in
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    self.shutter = .mid
+                }
+            }), forMode: .common)
+            
+        case .endedOutside:
+            
+            withAnimation(.easeInOut(duration: 0.25)) {
+                shutter = .mid
+            }
+            
+            return
+            
+        }
+        
+        guard let image: UIImage = finalPix.renderedImage else {
+            alertCenter.alertInfo(message: "Photo could not be captured.")
+            return
+        }
+        
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(savedImage), nil)
+
+        let id: UUID = UUID()
+        withAnimation(.easeInOut) {
+            capturedImages.append((id: id, image: image))
+        }
+        RunLoop.current.add(Timer(timeInterval: 0.1, repeats: false, block: { _ in
+            withAnimation(.easeInOut(duration: 0.35)) {
+                self.animatedImageIDs.append(id)
+            }
+        }), forMode: .common)
+        
+    }
+    
+    @objc func savedImage(_ image: UIImage,
+                          didFinishSavingWithError error: Error?,
+                          contextInfo: UnsafeRawPointer) {
+        guard error == nil else {
+            alertCenter.alertBug(message: "Save of photo failed.", error: error!)
+            return
         }
     }
     
-    func live() {
-        state = .live
-        images = []
-        hdr.clear()
+    // MARK: - Capture with Volume Button
+
+    @objc func updateVolume() {
+        capturePhoto()
     }
     
 }

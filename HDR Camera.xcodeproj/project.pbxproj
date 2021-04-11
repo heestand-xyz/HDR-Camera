@@ -7,10 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E5554ECB25DAA76B00398F19 /* HDRCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5554ECA25DAA76B00398F19 /* HDRCamera.swift */; };
+		E5535FF5262365A70043F745 /* HDRCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FD5262365A70043F745 /* HDRCamera.swift */; };
+		E5535FF7262365A70043F745 /* AlertCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FD7262365A70043F745 /* AlertCenter.swift */; };
+		E5535FFA262365A70043F745 /* CaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FDD262365A70043F745 /* CaptureView.swift */; };
+		E5535FFD262365A70043F745 /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE2262365A70043F745 /* VolumeView.swift */; };
+		E5535FFE262365A70043F745 /* VSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE3262365A70043F745 /* VSlider.swift */; };
+		E5535FFF262365A70043F745 /* MiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE4262365A70043F745 /* MiniView.swift */; };
+		E5536000262365A70043F745 /* BackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE5262365A70043F745 /* BackView.swift */; };
+		E5536001262365A70043F745 /* CameraFocusControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE7262365A70043F745 /* CameraFocusControlView.swift */; };
+		E5536002262365A70043F745 /* CameraLightControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE8262365A70043F745 /* CameraLightControlView.swift */; };
+		E5536003262365A70043F745 /* CameraControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FE9262365A70043F745 /* CameraControlsView.swift */; };
+		E5536006262365A70043F745 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FED262365A70043F745 /* ContentView.swift */; };
+		E5536007262365A70043F745 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FEF262365A70043F745 /* PhotoView.swift */; };
+		E5536008262365A70043F745 /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FF0262365A70043F745 /* ShareView.swift */; };
+		E5536009262365A70043F745 /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FF1262365A70043F745 /* PhotosView.swift */; };
+		E553600A262365A70043F745 /* PagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FF2262365A70043F745 /* PagesView.swift */; };
+		E553600B262365A70043F745 /* ShutterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FF4262365A70043F745 /* ShutterView.swift */; };
+		E5554ECB25DAA76B00398F19 /* LegacyHDRCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5554ECA25DAA76B00398F19 /* LegacyHDRCamera.swift */; };
 		E5638EF225E3F70500C4E54F /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5638EF125E3F70500C4E54F /* Camera.swift */; };
 		E5638EF625E3FC4700C4E54F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5638EF525E3FC4700C4E54F /* CameraView.swift */; };
-		E5638F0025E4008800C4E54F /* ShutterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5638EFF25E4008800C4E54F /* ShutterView.swift */; };
 		E5638F0425E4015600C4E54F /* PolyKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5638F0325E4015600C4E54F /* PolyKit */; };
 		E578AA4025DBE1FE006CAB54 /* DSC_0035.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3325DBE1FE006CAB54 /* DSC_0035.NEF */; };
 		E578AA4225DBE1FE006CAB54 /* DSC_0036.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3425DBE1FE006CAB54 /* DSC_0036.NEF */; };
@@ -24,7 +39,7 @@
 		E578AA5225DBE1FE006CAB54 /* DSC_0039.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3E25DBE1FE006CAB54 /* DSC_0039.NEF */; };
 		E578AA5425DBE1FF006CAB54 /* DSC_0038.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3F25DBE1FE006CAB54 /* DSC_0038.NEF */; };
 		E5950D9625DAA35900644D2F /* HDRCameraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5950D8325DAA35800644D2F /* HDRCameraApp.swift */; };
-		E5950D9825DAA35900644D2F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5950D8425DAA35800644D2F /* ContentView.swift */; };
+		E5950D9825DAA35900644D2F /* LegacyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5950D8425DAA35800644D2F /* LegacyContentView.swift */; };
 		E5950D9A25DAA35900644D2F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5950D8525DAA35900644D2F /* Assets.xcassets */; };
 		E5950DA825DAA40B00644D2F /* PixelKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5950DA725DAA40B00644D2F /* PixelKit */; };
 		E5975DE525DBCE8900CA6C0B /* MultiViews in Frameworks */ = {isa = PBXBuildFile; productRef = E5975DE425DBCE8900CA6C0B /* MultiViews */; };
@@ -33,10 +48,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E5554ECA25DAA76B00398F19 /* HDRCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRCamera.swift; sourceTree = "<group>"; };
+		E5535FD5262365A70043F745 /* HDRCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HDRCamera.swift; sourceTree = "<group>"; };
+		E5535FD7262365A70043F745 /* AlertCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertCenter.swift; sourceTree = "<group>"; };
+		E5535FDD262365A70043F745 /* CaptureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureView.swift; sourceTree = "<group>"; };
+		E5535FE2262365A70043F745 /* VolumeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
+		E5535FE3262365A70043F745 /* VSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VSlider.swift; sourceTree = "<group>"; };
+		E5535FE4262365A70043F745 /* MiniView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniView.swift; sourceTree = "<group>"; };
+		E5535FE5262365A70043F745 /* BackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackView.swift; sourceTree = "<group>"; };
+		E5535FE7262365A70043F745 /* CameraFocusControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraFocusControlView.swift; sourceTree = "<group>"; };
+		E5535FE8262365A70043F745 /* CameraLightControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraLightControlView.swift; sourceTree = "<group>"; };
+		E5535FE9262365A70043F745 /* CameraControlsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraControlsView.swift; sourceTree = "<group>"; };
+		E5535FED262365A70043F745 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E5535FEF262365A70043F745 /* PhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		E5535FF0262365A70043F745 /* ShareView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
+		E5535FF1262365A70043F745 /* PhotosView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
+		E5535FF2262365A70043F745 /* PagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagesView.swift; sourceTree = "<group>"; };
+		E5535FF4262365A70043F745 /* ShutterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShutterView.swift; sourceTree = "<group>"; };
+		E5554ECA25DAA76B00398F19 /* LegacyHDRCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyHDRCamera.swift; sourceTree = "<group>"; };
 		E5638EF125E3F70500C4E54F /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		E5638EF525E3FC4700C4E54F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		E5638EFF25E4008800C4E54F /* ShutterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShutterView.swift; sourceTree = "<group>"; };
 		E578AA3325DBE1FE006CAB54 /* DSC_0035.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0035.NEF; sourceTree = "<group>"; };
 		E578AA3425DBE1FE006CAB54 /* DSC_0036.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0036.NEF; sourceTree = "<group>"; };
 		E578AA3525DBE1FE006CAB54 /* DSC_0037.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0037.NEF; sourceTree = "<group>"; };
@@ -49,7 +79,7 @@
 		E578AA3E25DBE1FE006CAB54 /* DSC_0039.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0039.NEF; sourceTree = "<group>"; };
 		E578AA3F25DBE1FE006CAB54 /* DSC_0038.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0038.NEF; sourceTree = "<group>"; };
 		E5950D8325DAA35800644D2F /* HDRCameraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRCameraApp.swift; sourceTree = "<group>"; };
-		E5950D8425DAA35800644D2F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E5950D8425DAA35800644D2F /* LegacyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyContentView.swift; sourceTree = "<group>"; };
 		E5950D8525DAA35900644D2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E5950D8A25DAA35900644D2F /* HDR Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HDR Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5950D8D25DAA35900644D2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -71,6 +101,76 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E5535FD4262365A70043F745 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FD5262365A70043F745 /* HDRCamera.swift */,
+				E5535FD7262365A70043F745 /* AlertCenter.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		E5535FDB262365A70043F745 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FED262365A70043F745 /* ContentView.swift */,
+				E5535FDC262365A70043F745 /* Capture */,
+				E5535FE6262365A70043F745 /* Controls */,
+				E5535FEE262365A70043F745 /* Photo */,
+				E5535FF3262365A70043F745 /* Shutter */,
+				E5535FE1262365A70043F745 /* Other */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E5535FDC262365A70043F745 /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FDD262365A70043F745 /* CaptureView.swift */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		E5535FE1262365A70043F745 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FE2262365A70043F745 /* VolumeView.swift */,
+				E5535FE3262365A70043F745 /* VSlider.swift */,
+				E5535FE4262365A70043F745 /* MiniView.swift */,
+				E5535FE5262365A70043F745 /* BackView.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		E5535FE6262365A70043F745 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FE7262365A70043F745 /* CameraFocusControlView.swift */,
+				E5535FE8262365A70043F745 /* CameraLightControlView.swift */,
+				E5535FE9262365A70043F745 /* CameraControlsView.swift */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
+		E5535FEE262365A70043F745 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FEF262365A70043F745 /* PhotoView.swift */,
+				E5535FF0262365A70043F745 /* ShareView.swift */,
+				E5535FF1262365A70043F745 /* PhotosView.swift */,
+				E5535FF2262365A70043F745 /* PagesView.swift */,
+			);
+			path = Photo;
+			sourceTree = "<group>";
+		};
+		E5535FF3262365A70043F745 /* Shutter */ = {
+			isa = PBXGroup;
+			children = (
+				E5535FF4262365A70043F745 /* ShutterView.swift */,
+			);
+			path = Shutter;
+			sourceTree = "<group>";
+		};
 		E5554EC425DAA68400398F19 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,20 +185,22 @@
 			isa = PBXGroup;
 			children = (
 				E5950D8325DAA35800644D2F /* HDRCameraApp.swift */,
-				E5554EC925DAA74A00398F19 /* Controllers */,
-				E5638EF825E3FC7000C4E54F /* Views */,
+				E5535FD4262365A70043F745 /* Controllers */,
+				E5535FDB262365A70043F745 /* Views */,
+				E5554EC925DAA74A00398F19 /* Legacy Controllers */,
+				E5638EF825E3FC7000C4E54F /* Legacy Views */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		E5554EC925DAA74A00398F19 /* Controllers */ = {
+		E5554EC925DAA74A00398F19 /* Legacy Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				E5554ECA25DAA76B00398F19 /* HDRCamera.swift */,
+				E5554ECA25DAA76B00398F19 /* LegacyHDRCamera.swift */,
 				E5CF13E925E41C6600081A19 /* HDR */,
 				E5638EF425E3FC3A00C4E54F /* Camera */,
 			);
-			path = Controllers;
+			path = "Legacy Controllers";
 			sourceTree = "<group>";
 		};
 		E5638EF425E3FC3A00C4E54F /* Camera */ = {
@@ -110,14 +212,13 @@
 			path = Camera;
 			sourceTree = "<group>";
 		};
-		E5638EF825E3FC7000C4E54F /* Views */ = {
+		E5638EF825E3FC7000C4E54F /* Legacy Views */ = {
 			isa = PBXGroup;
 			children = (
-				E5950D8425DAA35800644D2F /* ContentView.swift */,
+				E5950D8425DAA35800644D2F /* LegacyContentView.swift */,
 				E5CF13EC25E42BB700081A19 /* HDRView.swift */,
-				E5638EFF25E4008800C4E54F /* ShutterView.swift */,
 			);
-			path = Views;
+			path = "Legacy Views";
 			sourceTree = "<group>";
 		};
 		E578AA3125DBE1FE006CAB54 /* RAW */ = {
@@ -287,11 +388,26 @@
 				E5638EF225E3F70500C4E54F /* Camera.swift in Sources */,
 				E5CF13ED25E42BB700081A19 /* HDRView.swift in Sources */,
 				E5CF13EB25E41C7000081A19 /* HDR.swift in Sources */,
-				E5950D9825DAA35900644D2F /* ContentView.swift in Sources */,
-				E5554ECB25DAA76B00398F19 /* HDRCamera.swift in Sources */,
+				E5950D9825DAA35900644D2F /* LegacyContentView.swift in Sources */,
+				E5535FF5262365A70043F745 /* HDRCamera.swift in Sources */,
+				E5535FFD262365A70043F745 /* VolumeView.swift in Sources */,
+				E5536003262365A70043F745 /* CameraControlsView.swift in Sources */,
+				E5536006262365A70043F745 /* ContentView.swift in Sources */,
+				E5554ECB25DAA76B00398F19 /* LegacyHDRCamera.swift in Sources */,
+				E5535FFE262365A70043F745 /* VSlider.swift in Sources */,
+				E5535FF7262365A70043F745 /* AlertCenter.swift in Sources */,
 				E5638EF625E3FC4700C4E54F /* CameraView.swift in Sources */,
-				E5638F0025E4008800C4E54F /* ShutterView.swift in Sources */,
+				E5536002262365A70043F745 /* CameraLightControlView.swift in Sources */,
+				E5535FFA262365A70043F745 /* CaptureView.swift in Sources */,
+				E5535FFF262365A70043F745 /* MiniView.swift in Sources */,
+				E5536007262365A70043F745 /* PhotoView.swift in Sources */,
+				E553600B262365A70043F745 /* ShutterView.swift in Sources */,
+				E553600A262365A70043F745 /* PagesView.swift in Sources */,
+				E5536000262365A70043F745 /* BackView.swift in Sources */,
+				E5536008262365A70043F745 /* ShareView.swift in Sources */,
+				E5536009262365A70043F745 /* PhotosView.swift in Sources */,
 				E5950D9625DAA35900644D2F /* HDRCameraApp.swift in Sources */,
+				E5536001262365A70043F745 /* CameraFocusControlView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +539,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "xyz.heestand.HDR-Editor";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = xyz.heestand.hdr.camera;
 				PRODUCT_NAME = "HDR Camera";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -445,7 +562,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "xyz.heestand.HDR-Editor";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = xyz.heestand.hdr.camera;
 				PRODUCT_NAME = "HDR Camera";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;

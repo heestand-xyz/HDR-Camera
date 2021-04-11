@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct HDRCameraApp: App {
+    @StateObject var hdrCamera = HDRCamera()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(hdrCamera: hdrCamera,
+                        alertCenter: hdrCamera.alertCenter)
         }
     }
 }
