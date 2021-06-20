@@ -34,8 +34,8 @@ class HDR: ObservableObject {
     var blurPix1: BlurPIX
     var blurPix2: BlurPIX
     
-    var redPix1: ChannelMixPIX
-    var redPix2: ChannelMixPIX
+    var reorderPix1: ReorderPIX
+    var reorderPix2: ReorderPIX
     
     var blendPix1: BlendPIX
     var blendPix2: BlendPIX
@@ -95,8 +95,8 @@ class HDR: ObservableObject {
             ("levelsPixGamma2", levelsPixGamma2),
             ("blurPix1", blurPix1),
             ("blurPix2", blurPix2),
-            ("redPix1", redPix1),
-            ("redPix2", redPix2),
+            ("reorderPix1", reorderPix1),
+            ("reorderPix2", reorderPix2),
             ("blendPix1", blendPix1),
             ("blendPix2", blendPix2),
             ("levelsPixBrightness1", levelsPixBrightness1),
@@ -169,24 +169,26 @@ class HDR: ObservableObject {
         blurPix2.input = levelsPixGamma2
         blurPix2.radius = 0.25
         
-        redPix1 = ChannelMixPIX()
-        redPix1.name = "redPix1"
-        redPix1.input = blurPix1
-        redPix1.alpha = .red
-        redPix2 = ChannelMixPIX()
-        redPix2.name = "redPix2"
-        redPix2.input = blurPix2
-        redPix2.alpha = .red
+        reorderPix1 = ReorderPIX()
+        reorderPix1.name = "reorderPix1"
+        reorderPix1.inputA = blurPix1
+        reorderPix1.inputB = blurPix1
+        reorderPix1.alphaChannel = .luma
+        reorderPix2 = ReorderPIX()
+        reorderPix2.name = "reorderPix2"
+        reorderPix2.inputA = blurPix2
+        reorderPix2.inputB = blurPix2
+        reorderPix2.alphaChannel = .luma
         
         blendPix1 = BlendPIX()
         blendPix1.name = "blendPix1"
         blendPix1.inputA = blurPix1
-        blendPix1.inputB = redPix1
+        blendPix1.inputB = reorderPix1
         blendPix1.blendMode = .multiply
         blendPix2 = BlendPIX()
         blendPix2.name = "blendPix2"
         blendPix2.inputA = blurPix2
-        blendPix2.inputB = redPix2
+        blendPix2.inputB = reorderPix2
         blendPix2.blendMode = .multiply
 
         levelsPixBrightness1 = LevelsPIX()
