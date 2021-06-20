@@ -7,22 +7,29 @@
 
 import Foundation
 import AVKit
+import Combine
 import SwiftUI
 
 class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
 
     private let captureSession: AVCaptureSession = .init()
     
-    private var backCamera: AVCaptureDevice?
-    private var frontCamera: AVCaptureDevice?
-    private var backInput: AVCaptureInput?
-    private var frontInput: AVCaptureInput?
+    private var camera: AVCaptureDevice?
+    private var input: AVCaptureInput?
 
     private var photoOutput: AVCapturePhotoOutput?
     
     private let exposureValues: [Float] = [-2.0, 0.0, 2.0]
     private var capturedImages: [UIImage]?
     private var competionHandler: ((Result<[UIImage], CameraError>) -> ())?
+    
+    @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
+    
+    var lens: HDRCamera.CameraLens = .back(.wide) {
+        didSet {
+            setupInputs()
+        }
+    }
     
     enum CameraError: LocalizedError {
         case captureFailed(String)
@@ -36,10 +43,22 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
             }
         }
     }
+    
+    var cancellables: [AnyCancellable] = []
 
     override init() {
+        
         super.init()
+        
         setup()
+        
+        NotificationCenter
+            .default
+            .publisher(for: UIDevice.orientationDidChangeNotification)
+            .sink { [weak self] _ in
+                self?.orientation = UIDevice.current.orientation
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Setup
@@ -64,20 +83,19 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
     private func setupInputs() {
         
-        if let backDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-            backCamera = backDevice
-            if let backInput = try? AVCaptureDeviceInput(device: backDevice),
-                captureSession.canAddInput(backInput) {
-                self.backInput = backInput
-                captureSession.addInput(backInput)
-            }
+        if let intput = input {
+            captureSession.removeInput(intput)
         }
         
-        if let frontDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-            frontCamera = frontDevice
-            if let frontInput = try? AVCaptureDeviceInput(device: frontDevice),
-               captureSession.canAddInput(frontInput) {
-                self.frontInput = frontInput
+        camera = nil
+        input = nil
+        
+        if let camera: AVCaptureDevice = lens.device {
+            self.camera = camera
+            if let input = try? AVCaptureDeviceInput(device: camera),
+               captureSession.canAddInput(input) {
+                self.input = input
+                captureSession.addInput(input)
             }
         }
         

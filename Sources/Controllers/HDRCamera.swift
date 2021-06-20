@@ -13,6 +13,7 @@ import PixelKit
 import SwiftUI
 import MultiViews
 import AVKit
+import Combine
 
 class HDRCamera: NSObject, ObservableObject {
 
@@ -26,6 +27,8 @@ class HDRCamera: NSObject, ObservableObject {
     let cameraPix: CameraPIX
     let levelsPix: LevelsPIX
     let finalPix: PIX
+    
+    @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
     
     enum State {
         case live
@@ -117,10 +120,28 @@ class HDRCamera: NSObject, ObservableObject {
         static var hasTele: Bool {
             AVCaptureDevice.default(.builtInTelephotoCamera, for: AVMediaType.video, position: .back) != nil
         }
+        var device: AVCaptureDevice? {
+            AVCaptureDevice.default({
+                switch self {
+                case .back(let backLens):
+                    switch backLens {
+                    case .ultraWide:
+                        return .builtInUltraWideCamera
+                    case .wide:
+                        return .builtInWideAngleCamera
+                    case .tele:
+                        return .builtInTelephotoCamera
+                    }
+                case .front:
+                    return .builtInWideAngleCamera
+                }
+            }(), for: .video, position: self == .front ? .front : .back)
+        }
     }
     @Published var cameraLens: CameraLens = .back(.wide) {
         didSet {
             cameraPix.camera = cameraLens.value
+            camera.lens = cameraLens
         }
     }
     #endif
@@ -129,6 +150,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     static let thumbnailSize = CGSize(width: 200 / (16 / 9), height: 200)
     
+    var cancellables: [AnyCancellable] = []
+
     // MARK: - Life Cycle -
     
     override init() {
@@ -150,6 +173,13 @@ class HDRCamera: NSObject, ObservableObject {
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateVolume), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
         
+        NotificationCenter
+            .default
+            .publisher(for: UIDevice.orientationDidChangeNotification)
+            .sink { [weak self] _ in
+                self?.orientation = UIDevice.current.orientation
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - App State
@@ -284,8 +314,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     func captureFailed(error: Error) {
         state = .live
-        fatalError("Capture Failed: \(error.localizedDescription)")
-//        alertCenter.alertBug(error: error)
+//        fatalError("Capture Failed: \(error.localizedDescription)")
+        alertCenter.alertBug(error: error)
     }
     
     @objc func savedImage(_ image: UIImage,

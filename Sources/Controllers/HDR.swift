@@ -22,16 +22,30 @@ class HDR: ObservableObject {
     var flipFlopPix1: FlipFlopPIX
     var flipFlopPix2: FlipFlopPIX
     
+    var monoPix1: ColorShiftPIX
+    var monoPix2: ColorShiftPIX
+    
+    var invertPix1: LevelsPIX
+    var invertPix2: LevelsPIX
+    
     var levelsPixGamma1: LevelsPIX
     var levelsPixGamma2: LevelsPIX
-
+    
     var blurPix1: BlurPIX
     var blurPix2: BlurPIX
+    
+    var redPix1: ChannelMixPIX
+    var redPix2: ChannelMixPIX
+    
+    var blendPix1: BlendPIX
+    var blendPix2: BlendPIX
     
     var levelsPixBrightness1: LevelsPIX
     var levelsPixBrightness2: LevelsPIX
 
     var blendsPix: BlendsPIX
+    
+    var levelsPix: LevelsPIX
 
     @Published var gamma1: CGFloat = 1.0 {
         didSet { levelsPixGamma1.gamma = gamma1 }
@@ -65,6 +79,33 @@ class HDR: ObservableObject {
     
     let finalPix: PIX
     
+    var allPixs: [(String, PIX)] {
+        [
+            ("imagePix0", imagePix0),
+            ("imagePix1", imagePix1),
+            ("imagePix2", imagePix2),
+            ("flipFlopPix0", flipFlopPix0),
+            ("flipFlopPix1", flipFlopPix1),
+            ("flipFlopPix2", flipFlopPix2),
+            ("monoPix1", monoPix1),
+            ("monoPix2", monoPix2),
+            ("invertPix1", invertPix1),
+            ("invertPix2", invertPix2),
+            ("levelsPixGamma1", levelsPixGamma1),
+            ("levelsPixGamma2", levelsPixGamma2),
+            ("blurPix1", blurPix1),
+            ("blurPix2", blurPix2),
+            ("redPix1", redPix1),
+            ("redPix2", redPix2),
+            ("blendPix1", blendPix1),
+            ("blendPix2", blendPix2),
+            ("levelsPixBrightness1", levelsPixBrightness1),
+            ("levelsPixBrightness2", levelsPixBrightness2),
+            ("blendsPix", blendsPix),
+            ("levelsPix", levelsPix),
+        ]
+    }
+    
     enum HDRError: LocalizedError {
         case timeout(Double)
         case badImageCount
@@ -95,22 +136,29 @@ class HDR: ObservableObject {
         flipFlopPix0 = FlipFlopPIX()
         flipFlopPix0.name = "flipFlopPix0"
         flipFlopPix0.input = imagePix0
-        flipFlopPix0.flop = .right
         flipFlopPix1 = FlipFlopPIX()
         flipFlopPix1.name = "flipFlopPix1"
         flipFlopPix1.input = imagePix1
-        flipFlopPix1.flop = .right
         flipFlopPix2 = FlipFlopPIX()
         flipFlopPix2.name = "flipFlopPix2"
         flipFlopPix2.input = imagePix2
-        flipFlopPix2.flop = .right
+        
+        monoPix1 = flipFlopPix1.pixMonochrome()
+        monoPix1.name = "monoPix1"
+        monoPix2 = flipFlopPix2.pixMonochrome()
+        monoPix2.name = "monoPix2"
+        
+        invertPix1 = monoPix1.pixInvert()
+        invertPix1.name = "invertPix1"
+        invertPix2 = monoPix2.pixInvert()
+        invertPix2.name = "invertPix2"
         
         levelsPixGamma1 = LevelsPIX()
         levelsPixGamma1.name = "levelsPixGamma1"
-        levelsPixGamma1.input = flipFlopPix1.pixMonochrome().pixInvert()
+        levelsPixGamma1.input = invertPix1
         levelsPixGamma2 = LevelsPIX()
         levelsPixGamma2.name = "levelsPixGamma2"
-        levelsPixGamma2.input = flipFlopPix2.pixMonochrome().pixInvert()
+        levelsPixGamma2.input = invertPix2
 
         blurPix1 = BlurPIX()
         blurPix1.name = "blurPix1"
@@ -120,20 +168,45 @@ class HDR: ObservableObject {
         blurPix2.name = "blurPix2"
         blurPix2.input = levelsPixGamma2
         blurPix2.radius = 0.25
+        
+        redPix1 = ChannelMixPIX()
+        redPix1.name = "redPix1"
+        redPix1.input = blurPix1
+        redPix1.alpha = .red
+        redPix2 = ChannelMixPIX()
+        redPix2.name = "redPix2"
+        redPix2.input = blurPix2
+        redPix2.alpha = .red
+        
+        blendPix1 = BlendPIX()
+        blendPix1.name = "blendPix1"
+        blendPix1.inputA = blurPix1
+        blendPix1.inputB = redPix1
+        blendPix1.blendMode = .multiply
+        blendPix2 = BlendPIX()
+        blendPix2.name = "blendPix2"
+        blendPix2.inputA = blurPix2
+        blendPix2.inputB = redPix2
+        blendPix2.blendMode = .multiply
 
         levelsPixBrightness1 = LevelsPIX()
         levelsPixBrightness1.name = "levelsPixBrightness1"
-        levelsPixBrightness1.input = flipFlopPix1.pixMask(pix: blurPix1)
+        levelsPixBrightness1.input = blendPix1
         levelsPixBrightness2 = LevelsPIX()
         levelsPixBrightness2.name = "levelsPixBrightness2"
-        levelsPixBrightness2.input = flipFlopPix2.pixMask(pix: blurPix2)
+        levelsPixBrightness2.input = blendPix2
 
         blendsPix = BlendsPIX()
         blendsPix.name = "blendsPix"
         blendsPix.blendMode = .add
         blendsPix.inputs = [flipFlopPix0, levelsPixBrightness1, levelsPixBrightness2]
         
-        finalPix = blendsPix.pixGamma(0.5)
+        levelsPix = LevelsPIX()
+        levelsPix.name = "levelsPix"
+        levelsPix.input = blendsPix
+        levelsPix.gamma = 0.5
+        
+        finalPix = levelsPix
         finalPix.name = "finalPix"
         finalPix.view.placement = .fit
 
@@ -142,6 +215,37 @@ class HDR: ObservableObject {
     func generate(images: [UIImage], completion: @escaping (Result<UIImage, Error>) -> ()) {
         
         print("HDR Camera generate images at \(images.first!.size)")
+        
+        switch UIDevice.current.orientation {
+        case .portraitUpsideDown:
+            print(">>>>> portraitUpsideDown")
+            flipFlopPix0.flop = .right
+            flipFlopPix1.flop = .right
+            flipFlopPix2.flop = .right
+            flipFlopPix0.flip = .x
+            flipFlopPix1.flip = .x
+            flipFlopPix2.flip = .x
+            break
+        case .landscapeLeft:
+            print(">>>>> landscapeLeft")
+            flipFlopPix0.flip = .x
+            flipFlopPix1.flip = .x
+            flipFlopPix2.flip = .x
+            break
+        case .landscapeRight:
+            print(">>>>> landscapeRight")
+            flipFlopPix0.flip = .y
+            flipFlopPix1.flip = .y
+            flipFlopPix2.flip = .y
+        default:
+            print(">>>>> default")
+            flipFlopPix0.flop = .left
+            flipFlopPix1.flop = .left
+            flipFlopPix2.flop = .left
+            flipFlopPix0.flip = .x
+            flipFlopPix1.flip = .x
+            flipFlopPix2.flip = .x
+        }
         
         load(images: images) { [weak self] result in
             guard let self = self else { return }
@@ -216,9 +320,13 @@ class HDR: ObservableObject {
     }
     
     private func clear() {
+        print("HDR Camera - Clear")
         imagePix0.image = nil
         imagePix1.image = nil
         imagePix2.image = nil
+        allPixs.forEach { (name, pix) in
+            pix.clearRender()
+        }
     }
     
 }
