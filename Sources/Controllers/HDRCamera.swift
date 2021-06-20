@@ -20,14 +20,19 @@ class HDRCamera: NSObject, ObservableObject {
 
     let alertCenter: AlertCenter = .init()
     
-//    #if DEBUG
-//    let cameraPix: ImagePIX
-//    #else
+    let hdr: HDR = .init()
+    let camera: Camera = .init()
+    
     let cameraPix: CameraPIX
-//    #endif
-    let thumbnailPix: ResolutionPIX
-    let layerPix: NilPIX
+    let levelsPix: LevelsPIX
     let finalPix: PIX
+    
+    enum State {
+        case live
+        case capture
+        case generating
+    }
+    @Published var state: State = .live
     
     @Published private(set) var capturedImages: [(id: UUID, image: UIImage)] = []
     @Published var animatedImageIDs: [UUID] = []
@@ -68,7 +73,7 @@ class HDRCamera: NSObject, ObservableObject {
     #endif
     
     #if !targetEnvironment(macCatalyst)
-    enum Camera: Equatable {
+    enum CameraLens: Equatable {
         enum Back: Equatable {
             case ultraWide
             case wide
@@ -113,9 +118,9 @@ class HDRCamera: NSObject, ObservableObject {
             AVCaptureDevice.default(.builtInTelephotoCamera, for: AVMediaType.video, position: .back) != nil
         }
     }
-    @Published var camera: Camera = .back(.wide) {
+    @Published var cameraLens: CameraLens = .back(.wide) {
         didSet {
-            cameraPix.camera = camera.value
+            cameraPix.camera = cameraLens.value
         }
     }
     #endif
@@ -128,23 +133,14 @@ class HDRCamera: NSObject, ObservableObject {
     
     override init() {
         
-//        #if DEBUG
-//        cameraPix = ImagePIX()
-//        cameraPix.image = UIImage(named: "TestC")!
-//        #else
         cameraPix = CameraPIX()
-//        #endif
         cameraPix.view.placement = .fill
         
-        thumbnailPix = ResolutionPIX(at: .size(HDRCamera.thumbnailSize) * UIScreen.main.scale)
-        thumbnailPix.input = cameraPix
-        thumbnailPix.placement = .fill
-        thumbnailPix.bypass = true
+        levelsPix = LevelsPIX()
+        levelsPix.input = cameraPix
+        levelsPix.gamma = 0.5
         
-        layerPix = NilPIX()
-        layerPix.input = cameraPix
-        
-        finalPix = layerPix
+        finalPix = levelsPix
         finalPix.view.placement = .fill
         finalPix.view.checker = false
         
@@ -192,6 +188,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     func capturePhoto(with interaction: MVInteraction = .endedInside) {
         
+        print("HDRCamera capturePhoto")
+        
         switch interaction {
         case .started:
             
@@ -226,16 +224,53 @@ class HDRCamera: NSObject, ObservableObject {
             
         }
         
-        guard let image: UIImage = finalPix.renderedImage else {
-            alertCenter.alertInfo(message: "Photo could not be captured.")
-            return
-        }
+//        guard let image: UIImage = finalPix.renderedImage else {
+//            alertCenter.alertInfo(message: "Photo could not be captured.")
+//            return
+//        }
         
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(savedImage), nil)
+        capture { result in
+            switch result {
+            case .success(let hdrImage):
+                self.captureDone(hdrImage: hdrImage)
+            case .failure(let error):
+                self.captureFailed(error: error)
+            }
+        }
+
+    }
+    
+    func capture(completion: @escaping (Result<UIImage, Error>) -> ()) {
+        print("HDRCamera capture")
+        state = .capture
+        cameraPix.active = false
+        camera.capture { result in
+            switch result {
+            case .success(let images):
+                self.state = .generating
+                self.hdr.generate(images: images) { result in
+                    switch result {
+                    case .success(let hdrImage):
+                        completion(.success(hdrImage))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                    self.cameraPix.active = true
+                }
+            case .failure(let error):
+                completion(.failure(error))
+                self.cameraPix.active = true
+            }
+        }
+    }
+    
+    func captureDone(hdrImage: UIImage) {
+        
+        UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
 
         let id: UUID = UUID()
         withAnimation(.easeInOut) {
-            capturedImages.append((id: id, image: image))
+            capturedImages.append((id: id, image: hdrImage))
         }
         RunLoop.current.add(Timer(timeInterval: 0.1, repeats: false, block: { _ in
             withAnimation(.easeInOut(duration: 0.35)) {
@@ -243,6 +278,14 @@ class HDRCamera: NSObject, ObservableObject {
             }
         }), forMode: .common)
         
+        state = .live
+        
+    }
+    
+    func captureFailed(error: Error) {
+        state = .live
+        fatalError("Capture Failed: \(error.localizedDescription)")
+//        alertCenter.alertBug(error: error)
     }
     
     @objc func savedImage(_ image: UIImage,

@@ -16,7 +16,7 @@ struct CameraControlsView: View {
     @ObservedObject var hdrCamera: HDRCamera
     
     var hasMultiCameras: Bool {
-        HDRCamera.Camera.hasTele || HDRCamera.Camera.hasUltrawide
+        HDRCamera.CameraLens.hasTele || HDRCamera.CameraLens.hasUltrawide
     }
     
     var body: some View {
@@ -25,10 +25,10 @@ struct CameraControlsView: View {
             VStack(spacing: 10) {
                 
                 Button(action: {
-                    if hdrCamera.camera == .front {
-                        hdrCamera.camera = .back(.wide)
+                    if hdrCamera.cameraLens == .front {
+                        hdrCamera.cameraLens = .back(.wide)
                     } else {
-                        hdrCamera.camera = .front
+                        hdrCamera.cameraLens = .front
                     }
                 }, label: {
                     Image(systemName: "arrow.triangle.2.circlepath.camera")
@@ -38,30 +38,30 @@ struct CameraControlsView: View {
                 if hasMultiCameras {
                     
                     Button(action: {
-                        if case .back(let back) = hdrCamera.camera {
+                        if case .back(let back) = hdrCamera.cameraLens {
                             switch back {
                             case .ultraWide:
-                                if HDRCamera.Camera.hasTele {
-                                    hdrCamera.camera = .back(.tele)
+                                if HDRCamera.CameraLens.hasTele {
+                                    hdrCamera.cameraLens = .back(.tele)
                                 } else {
-                                    hdrCamera.camera = .back(.wide)
+                                    hdrCamera.cameraLens = .back(.wide)
                                 }
                             case .wide:
-                                if HDRCamera.Camera.hasUltrawide {
-                                    hdrCamera.camera = .back(.ultraWide)
+                                if HDRCamera.CameraLens.hasUltrawide {
+                                    hdrCamera.cameraLens = .back(.ultraWide)
                                 } else {
-                                    hdrCamera.camera = .back(.tele)
+                                    hdrCamera.cameraLens = .back(.tele)
                                 }
                             case .tele:
-                                hdrCamera.camera = .back(.wide)
+                                hdrCamera.cameraLens = .back(.wide)
                             }
                         }
                     }, label: {
-                        Text(String(format: "x%.1f", hdrCamera.camera.xFactor))
+                        Text(String(format: "x%.1f", hdrCamera.cameraLens.xFactor))
                             .fontWeight(.bold)
                             .font(.system(size: 17))
                     })
-                    .disabled(hdrCamera.camera == .front)
+                    .disabled(hdrCamera.cameraLens == .front)
                 
                 }
                 
