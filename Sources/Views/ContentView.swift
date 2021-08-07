@@ -56,7 +56,7 @@ struct ContentView: View {
                 ShutterView(capture: { interaction in
                     hdrCamera.capturePhoto(with: interaction)
                 }, shutter: $hdrCamera.shutter)
-                    .rotationEffect(Angle(degrees: -90 * hdrCamera.timeAnimation))
+                    .rotationEffect(Angle(degrees: -90 * Double(hdrCamera.timeAnimation)))
                     .frame(width: 80, height: 80)
                     .shadow(radius: 10)
                     .padding(.bottom, 50)

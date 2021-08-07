@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "CoreGraphicsExtensions",
-        "repositoryURL": "https://github.com/heestand-xyz/CoreGraphicsExtensions",
-        "state": {
-          "branch": null,
-          "revision": "4f0034224a376d812253ebb10e51b34f4164fc21",
-          "version": "1.1.1"
-        }
-      },
-      {
         "package": "PolyKit",
         "repositoryURL": "https://github.com/heestand-xyz/PolyKit.git",
         "state": {
