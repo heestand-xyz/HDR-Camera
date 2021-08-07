@@ -11,9 +11,6 @@ import PixelKit
 
 class HDR: ObservableObject {
     
-    
-    var images: [UIImage] = []
-    
     var imagePix0: ImagePIX
     var imagePix1: ImagePIX
     var imagePix2: ImagePIX
@@ -40,6 +37,7 @@ class HDR: ObservableObject {
     var blendPix1: BlendPIX
     var blendPix2: BlendPIX
     
+    var levelsPixBrightness0: LevelsPIX
     var levelsPixBrightness1: LevelsPIX
     var levelsPixBrightness2: LevelsPIX
 
@@ -182,31 +180,37 @@ class HDR: ObservableObject {
         
         blendPix1 = BlendPIX()
         blendPix1.name = "blendPix1"
-        blendPix1.inputA = blurPix1
+        blendPix1.inputA = flipFlopPix1
         blendPix1.inputB = reorderPix1
         blendPix1.blendMode = .multiply
         blendPix2 = BlendPIX()
         blendPix2.name = "blendPix2"
-        blendPix2.inputA = blurPix2
+        blendPix2.inputA = flipFlopPix2
         blendPix2.inputB = reorderPix2
         blendPix2.blendMode = .multiply
-
+        
+        levelsPixBrightness0 = LevelsPIX()
+        levelsPixBrightness0.name = "levelsPixBrightness0"
+        levelsPixBrightness0.input = flipFlopPix0
+        levelsPixBrightness0.brightness = 1.25
         levelsPixBrightness1 = LevelsPIX()
         levelsPixBrightness1.name = "levelsPixBrightness1"
         levelsPixBrightness1.input = blendPix1
+        levelsPixBrightness1.brightness = 2.25
         levelsPixBrightness2 = LevelsPIX()
         levelsPixBrightness2.name = "levelsPixBrightness2"
         levelsPixBrightness2.input = blendPix2
-
+        levelsPixBrightness2.brightness = 2.25
+        
         blendsPix = BlendsPIX()
         blendsPix.name = "blendsPix"
         blendsPix.blendMode = .add
-        blendsPix.inputs = [flipFlopPix0, levelsPixBrightness1, levelsPixBrightness2]
+        blendsPix.inputs = [levelsPixBrightness0, levelsPixBrightness1, levelsPixBrightness2]
         
         levelsPix = LevelsPIX()
         levelsPix.name = "levelsPix"
         levelsPix.input = blendsPix
-        levelsPix.gamma = 0.5
+        levelsPix.gamma = 0.8
         
         finalPix = levelsPix
         finalPix.name = "finalPix"
@@ -241,12 +245,18 @@ class HDR: ObservableObject {
             flipFlopPix2.flip = .y
         default:
             print(">>>>> default")
+            #if targetEnvironment(simulator)
+            flipFlopPix0.flip = .y
+            flipFlopPix1.flip = .y
+            flipFlopPix2.flip = .y
+            #else
             flipFlopPix0.flop = .left
             flipFlopPix1.flop = .left
             flipFlopPix2.flop = .left
             flipFlopPix0.flip = .x
             flipFlopPix1.flip = .x
             flipFlopPix2.flip = .x
+            #endif
         }
         
         load(images: images) { [weak self] result in
@@ -255,7 +265,7 @@ class HDR: ObservableObject {
             switch result {
             case .success:
                 
-                self.timeout(1.0) {
+                self.timeout(2.5) {
                     if self.finalPix.texture != nil {
                         
                         guard let hdrImage: UIImage = self.finalPix.renderedImage else {

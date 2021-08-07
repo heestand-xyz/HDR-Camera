@@ -14,6 +14,7 @@ import SwiftUI
 import MultiViews
 import AVKit
 import Combine
+import CryptoKit
 
 class HDRCamera: NSObject, ObservableObject {
 
@@ -154,9 +155,17 @@ class HDRCamera: NSObject, ObservableObject {
     
     @Published var shutter: ShutterOpen = .mid
     
-    static let thumbnailSize = CGSize(width: 200 / (16 / 9), height: 200)
-    
     var cancellables: [AnyCancellable] = []
+    
+    enum HDRError: LocalizedError {
+        case md5CheckFailed(String)
+        var errorDescription: String? {
+            switch self {
+            case .md5CheckFailed(let info):
+                return "Checksum Failed: \(info)"
+            }
+        }
+    }
 
     // MARK: - Life Cycle -
     
@@ -321,15 +330,23 @@ class HDRCamera: NSObject, ObservableObject {
         camera.capture { result in
             switch result {
             case .success(let images):
+                if !self.check(images: images, id: "originals") {
+                    completion(.failure(HDRError.md5CheckFailed("Originals")))
+                    return
+                }
                 self.state = .generating
                 self.hdr.generate(images: images) { result in
+                    defer { done() }
                     switch result {
                     case .success(let hdrImage):
+                        if !self.check(images: [hdrImage], id: "hdr") {
+                            completion(.failure(HDRError.md5CheckFailed("HDR")))
+                            return
+                        }
                         completion(.success(hdrImage))
                     case .failure(let error):
                         completion(.failure(error))
                     }
-                    done()
                 }
             case .failure(let error):
                 completion(.failure(error))
@@ -339,11 +356,36 @@ class HDRCamera: NSObject, ObservableObject {
         
     }
     
+    var lastMd5s: [String: [String]] = [:]
+    
+    func check(images: [UIImage], id: String) -> Bool {
+        var md5s: [String] = []
+        for image in images {
+            guard let md5 = md5(image: image) else { break }
+            md5s.append(md5)
+        }
+        guard md5s.count == images.count else {
+            self.lastMd5s[id] = []
+            return false
+        }
+        if lastMd5s[id] == md5s {
+            return false
+        }
+        lastMd5s[id] = md5s
+        return true
+    }
+    
+    func md5(image: UIImage) -> String? {
+        guard let data: Data = image.pngData() else { return nil }
+        return Insecure.MD5.hash(data: data).map { String(format: "%02hhx", $0) }.joined()
+    }
+    
     func captureDone(hdrImage: UIImage) {
         
         UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
 
         let id: UUID = UUID()
+        print(">>>>>>>>>>>>>>>>>>>>>>>>> ID", id)
         withAnimation(.easeInOut) {
             capturedImages.append((id: id, image: hdrImage))
         }

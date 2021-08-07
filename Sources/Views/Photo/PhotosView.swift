@@ -34,20 +34,33 @@ struct PhotosView: View {
             
             Spacer()
             
-            PagesView(pageIndex: $pageIndex) {
-                hdrCamera.capturedImages.map { pack in
-                    PhotoView(image: pack.image)
-                }
-            }
+//            PagesView(pageIndex: $pageIndex) {
+//                hdrCamera.capturedImages.map { pack in
+//                    (id: pack.id,
+//                     view: PhotoView(image: pack.image)
+//                        #if DEBUG
+//                        .overlay(Text(pack.id.uuidString).padding().background(Color.black))
+//                        #endif
+//                     )
+//                }
+//            }
             
-            HStack {
+            TabView(selection: $pageIndex) {
                 ForEach(hdrCamera.capturedImages, id: \.id) { pack in
-                    Circle()
-                        .frame(width: 7.5, height: 7.5)
-                        .opacity(pageIndex == hdrCamera.capturedImages.firstIndex(where: { $0.id == pack.id }) ? 1.0 : 0.25)
+                    PhotoView(image: pack.image)
+                        .tag(hdrCamera.capturedImages.map(\.id).firstIndex(of: pack.id) ?? 0)
                 }
             }
-            .opacity(hdrCamera.capturedImages.count > 1 ? 1.0 : 0.0)
+            .tabViewStyle(PageTabViewStyle())
+            
+//            HStack {
+//                ForEach(hdrCamera.capturedImages, id: \.id) { pack in
+//                    Circle()
+//                        .frame(width: 7.5, height: 7.5)
+//                        .opacity(pageIndex == hdrCamera.capturedImages.firstIndex(where: { $0.id == pack.id }) ? 1.0 : 0.25)
+//                }
+//            }
+//            .opacity(hdrCamera.capturedImages.count > 1 ? 1.0 : 0.0)
             
             HStack {
                 
