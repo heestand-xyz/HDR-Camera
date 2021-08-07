@@ -32,17 +32,6 @@
 		E553600B262365A70043F745 /* ShutterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FF4262365A70043F745 /* ShutterView.swift */; };
 		E5638EF225E3F70500C4E54F /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5638EF125E3F70500C4E54F /* Camera.swift */; };
 		E5638F0425E4015600C4E54F /* PolyKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5638F0325E4015600C4E54F /* PolyKit */; };
-		E578AA4025DBE1FE006CAB54 /* DSC_0035.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3325DBE1FE006CAB54 /* DSC_0035.NEF */; };
-		E578AA4225DBE1FE006CAB54 /* DSC_0036.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3425DBE1FE006CAB54 /* DSC_0036.NEF */; };
-		E578AA4425DBE1FE006CAB54 /* DSC_0037.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3525DBE1FE006CAB54 /* DSC_0037.NEF */; };
-		E578AA4625DBE1FE006CAB54 /* DSC_0044.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3725DBE1FE006CAB54 /* DSC_0044.NEF */; };
-		E578AA4825DBE1FE006CAB54 /* DSC_0045.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3825DBE1FE006CAB54 /* DSC_0045.NEF */; };
-		E578AA4A25DBE1FE006CAB54 /* DSC_0042.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3925DBE1FE006CAB54 /* DSC_0042.NEF */; };
-		E578AA4C25DBE1FE006CAB54 /* DSC_0043.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3A25DBE1FE006CAB54 /* DSC_0043.NEF */; };
-		E578AA4E25DBE1FE006CAB54 /* DSC_0041.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3C25DBE1FE006CAB54 /* DSC_0041.NEF */; };
-		E578AA5025DBE1FE006CAB54 /* DSC_0040.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3D25DBE1FE006CAB54 /* DSC_0040.NEF */; };
-		E578AA5225DBE1FE006CAB54 /* DSC_0039.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3E25DBE1FE006CAB54 /* DSC_0039.NEF */; };
-		E578AA5425DBE1FF006CAB54 /* DSC_0038.NEF in Resources */ = {isa = PBXBuildFile; fileRef = E578AA3F25DBE1FE006CAB54 /* DSC_0038.NEF */; };
 		E5950D9625DAA35900644D2F /* HDRCameraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5950D8325DAA35800644D2F /* HDRCameraApp.swift */; };
 		E5950D9A25DAA35900644D2F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5950D8525DAA35900644D2F /* Assets.xcassets */; };
 		E5950DA825DAA40B00644D2F /* PixelKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5950DA725DAA40B00644D2F /* PixelKit */; };
@@ -74,17 +63,6 @@
 		E5535FF2262365A70043F745 /* PagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagesView.swift; sourceTree = "<group>"; };
 		E5535FF4262365A70043F745 /* ShutterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShutterView.swift; sourceTree = "<group>"; };
 		E5638EF125E3F70500C4E54F /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
-		E578AA3325DBE1FE006CAB54 /* DSC_0035.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0035.NEF; sourceTree = "<group>"; };
-		E578AA3425DBE1FE006CAB54 /* DSC_0036.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0036.NEF; sourceTree = "<group>"; };
-		E578AA3525DBE1FE006CAB54 /* DSC_0037.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0037.NEF; sourceTree = "<group>"; };
-		E578AA3725DBE1FE006CAB54 /* DSC_0044.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0044.NEF; sourceTree = "<group>"; };
-		E578AA3825DBE1FE006CAB54 /* DSC_0045.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0045.NEF; sourceTree = "<group>"; };
-		E578AA3925DBE1FE006CAB54 /* DSC_0042.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0042.NEF; sourceTree = "<group>"; };
-		E578AA3A25DBE1FE006CAB54 /* DSC_0043.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0043.NEF; sourceTree = "<group>"; };
-		E578AA3C25DBE1FE006CAB54 /* DSC_0041.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0041.NEF; sourceTree = "<group>"; };
-		E578AA3D25DBE1FE006CAB54 /* DSC_0040.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0040.NEF; sourceTree = "<group>"; };
-		E578AA3E25DBE1FE006CAB54 /* DSC_0039.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0039.NEF; sourceTree = "<group>"; };
-		E578AA3F25DBE1FE006CAB54 /* DSC_0038.NEF */ = {isa = PBXFileReference; lastKnownFileType = file; path = DSC_0038.NEF; sourceTree = "<group>"; };
 		E5950D8325DAA35800644D2F /* HDRCameraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRCameraApp.swift; sourceTree = "<group>"; };
 		E5950D8525DAA35900644D2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E5950D8A25DAA35900644D2F /* HDR Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HDR Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -210,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				E5950D8D25DAA35900644D2F /* Info.plist */,
-				E578AA3125DBE1FE006CAB54 /* RAW */,
 				E5950D8525DAA35900644D2F /* Assets.xcassets */,
 			);
 			path = Resources;
@@ -224,48 +201,6 @@
 				E5535FDB262365A70043F745 /* Views */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		E578AA3125DBE1FE006CAB54 /* RAW */ = {
-			isa = PBXGroup;
-			children = (
-				E578AA3225DBE1FE006CAB54 /* A */,
-				E578AA3625DBE1FE006CAB54 /* C */,
-				E578AA3B25DBE1FE006CAB54 /* B */,
-			);
-			path = RAW;
-			sourceTree = "<group>";
-		};
-		E578AA3225DBE1FE006CAB54 /* A */ = {
-			isa = PBXGroup;
-			children = (
-				E578AA3325DBE1FE006CAB54 /* DSC_0035.NEF */,
-				E578AA3425DBE1FE006CAB54 /* DSC_0036.NEF */,
-				E578AA3525DBE1FE006CAB54 /* DSC_0037.NEF */,
-			);
-			path = A;
-			sourceTree = "<group>";
-		};
-		E578AA3625DBE1FE006CAB54 /* C */ = {
-			isa = PBXGroup;
-			children = (
-				E578AA3725DBE1FE006CAB54 /* DSC_0044.NEF */,
-				E578AA3825DBE1FE006CAB54 /* DSC_0045.NEF */,
-				E578AA3925DBE1FE006CAB54 /* DSC_0042.NEF */,
-				E578AA3A25DBE1FE006CAB54 /* DSC_0043.NEF */,
-			);
-			path = C;
-			sourceTree = "<group>";
-		};
-		E578AA3B25DBE1FE006CAB54 /* B */ = {
-			isa = PBXGroup;
-			children = (
-				E578AA3C25DBE1FE006CAB54 /* DSC_0041.NEF */,
-				E578AA3D25DBE1FE006CAB54 /* DSC_0040.NEF */,
-				E578AA3E25DBE1FE006CAB54 /* DSC_0039.NEF */,
-				E578AA3F25DBE1FE006CAB54 /* DSC_0038.NEF */,
-			);
-			path = B;
 			sourceTree = "<group>";
 		};
 		E5950D7D25DAA35800644D2F = {
@@ -395,17 +330,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E578AA5225DBE1FE006CAB54 /* DSC_0039.NEF in Resources */,
-				E578AA5025DBE1FE006CAB54 /* DSC_0040.NEF in Resources */,
-				E578AA4625DBE1FE006CAB54 /* DSC_0044.NEF in Resources */,
-				E578AA4E25DBE1FE006CAB54 /* DSC_0041.NEF in Resources */,
-				E578AA4825DBE1FE006CAB54 /* DSC_0045.NEF in Resources */,
-				E578AA4A25DBE1FE006CAB54 /* DSC_0042.NEF in Resources */,
-				E578AA4C25DBE1FE006CAB54 /* DSC_0043.NEF in Resources */,
-				E578AA5425DBE1FF006CAB54 /* DSC_0038.NEF in Resources */,
-				E578AA4025DBE1FE006CAB54 /* DSC_0035.NEF in Resources */,
-				E578AA4225DBE1FE006CAB54 /* DSC_0036.NEF in Resources */,
-				E578AA4425DBE1FE006CAB54 /* DSC_0037.NEF in Resources */,
 				E5950D9A25DAA35900644D2F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -34,21 +34,21 @@ struct ContentView: View {
             })
             .shadow(radius: 10)
             
-            #if !targetEnvironment(macCatalyst)
-            // Controls
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Color.clear
-                    CameraControlsView(hdrCamera: hdrCamera)
-                        .offset(x: hdrCamera.cameraControl == .none ? 0 : -geo.size.width - 10)
-                    CameraLightControlView(hdrCamera: hdrCamera)
-                        .offset(x: hdrCamera.cameraControl == .light ? 0 : -geo.size.width - 10)
-                    CameraFocusControlView(hdrCamera: hdrCamera)
-                        .offset(x: hdrCamera.cameraControl == .focus ? 0 : -geo.size.width - 10)
-                }
-                .padding()
-            }
-            #endif
+//            #if !targetEnvironment(macCatalyst)
+//            // Controls
+//            GeometryReader { geo in
+//                ZStack(alignment: .leading) {
+//                    Color.clear
+//                    CameraControlsView(hdrCamera: hdrCamera)
+//                        .offset(x: hdrCamera.cameraControl == .none ? 0 : -geo.size.width - 10)
+//                    CameraLightControlView(hdrCamera: hdrCamera)
+//                        .offset(x: hdrCamera.cameraControl == .light ? 0 : -geo.size.width - 10)
+//                    CameraFocusControlView(hdrCamera: hdrCamera)
+//                        .offset(x: hdrCamera.cameraControl == .focus ? 0 : -geo.size.width - 10)
+//                }
+//                .padding()
+//            }
+//            #endif
             
             // Shutter
             VStack {
