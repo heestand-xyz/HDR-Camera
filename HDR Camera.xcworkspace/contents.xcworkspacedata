@@ -5,9 +5,18 @@
       location = "container:HDR Camera.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../../packages/lite/PixelKit">
+      location = "group:../../packages/PixelKit">
    </FileRef>
    <FileRef
-      location = "group:../../packages/lite/RenderKit">
+      location = "group:../../packages/RenderKit">
+   </FileRef>
+   <FileRef
+      location = "group:../../packages/MultiViews">
+   </FileRef>
+   <FileRef
+      location = "group:../../packages/PixelColor">
+   </FileRef>
+   <FileRef
+      location = "group:../../packages/Resolution">
    </FileRef>
 </Workspace>

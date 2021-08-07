@@ -26,8 +26,14 @@ class HDRCamera: NSObject, ObservableObject {
     
     let cameraPix: CameraPIX
     let levelsPix: LevelsPIX
+    let blurPix: BlurPIX
     let finalPix: PIX
     
+    @Published var captureAnimation: CGFloat = 0.0
+    
+    var timeAnimationTimer: Timer?
+    @Published var timeAnimation: CGFloat = 0.0
+
     @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
     
     enum State {
@@ -163,7 +169,11 @@ class HDRCamera: NSObject, ObservableObject {
         levelsPix.input = cameraPix
         levelsPix.gamma = 0.5
         
-        finalPix = levelsPix
+        blurPix = BlurPIX()
+        blurPix.input = levelsPix
+        blurPix.radius = 0.0
+        
+        finalPix = blurPix
         finalPix.view.placement = .fill
         finalPix.view.checker = false
         
@@ -271,9 +281,43 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     func capture(completion: @escaping (Result<UIImage, Error>) -> ()) {
+        
         print("HDRCamera capture")
+        
         state = .capture
+        
         cameraPix.active = false
+        
+        animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
+            self?.blurPix.radius = 0.1 * fraction
+            self?.timeAnimation += 0.01 * fraction
+        } done: { [weak self] in
+            guard let self = self else { return }
+            self.timeAnimationTimer = Timer(timeInterval: 0.01, repeats: true, block: { [weak self] _ in
+                self?.timeAnimation += 0.01
+            })
+            RunLoop.current.add(self.timeAnimationTimer!, forMode: .common)
+        }
+        withAnimation(.easeInOut(duration: 0.5)) {
+            captureAnimation = 1.0
+        }
+        
+        func done() {
+            
+            self.cameraPix.active = true
+            
+            timeAnimationTimer?.invalidate()
+            timeAnimationTimer = nil
+            animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
+                self?.blurPix.radius = 0.1 - 0.1 * fraction
+                self?.timeAnimation += 0.01 * (1.0 - fraction)
+            }
+            withAnimation(.easeInOut(duration: 0.5)) {
+                captureAnimation = 0.0
+            }
+            
+        }
+        
         camera.capture { result in
             switch result {
             case .success(let images):
@@ -285,13 +329,14 @@ class HDRCamera: NSObject, ObservableObject {
                     case .failure(let error):
                         completion(.failure(error))
                     }
-                    self.cameraPix.active = true
+                    done()
                 }
             case .failure(let error):
                 completion(.failure(error))
-                self.cameraPix.active = true
+                done()
             }
         }
+        
     }
     
     func captureDone(hdrImage: UIImage) {
@@ -331,6 +376,37 @@ class HDRCamera: NSObject, ObservableObject {
 
     @objc func updateVolume() {
         capturePhoto()
+    }
+    
+}
+
+extension HDRCamera {
+    
+    enum AnimationEase {
+        case linear
+        case easeIn
+        case easeInOut
+        case easeOut
+    }
+    
+    func animate(for duration: CGFloat, ease: AnimationEase = .linear, loop: @escaping (CGFloat) -> (), done: (() -> ())? = nil) {
+        let startTime = Date()
+        RunLoop.current.add(Timer(timeInterval: 1.0 / Double(UIScreen.main.maximumFramesPerSecond), repeats: true, block: { t in
+            let elapsedTime = CGFloat(-startTime.timeIntervalSinceNow)
+            let fraction = min(elapsedTime / duration, 1.0)
+            var easeFraction = fraction
+            switch ease {
+            case .linear: break
+            case .easeIn: easeFraction = cos(fraction * .pi / 2 - .pi) + 1
+            case .easeInOut: easeFraction = cos(fraction * .pi - .pi) / 2 + 0.5
+            case .easeOut: easeFraction = cos(fraction * .pi / 2 - .pi / 2)
+            }
+            loop(easeFraction)
+            if fraction == 1.0 {
+                done?()
+                t.invalidate()
+            }
+        }), forMode: .common)
     }
     
 }

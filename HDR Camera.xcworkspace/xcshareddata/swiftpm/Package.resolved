@@ -2,21 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "MultiViews",
-        "repositoryURL": "https://github.com/heestand-xyz/MultiViews.git",
+        "package": "CoreGraphicsExtensions",
+        "repositoryURL": "https://github.com/heestand-xyz/CoreGraphicsExtensions",
         "state": {
           "branch": null,
-          "revision": "a365e18dd41bf27b9ef2650327a00bd0c3d8c8a3",
-          "version": "1.3.0"
-        }
-      },
-      {
-        "package": "PixelColor",
-        "repositoryURL": "https://github.com/heestand-xyz/PixelColor",
-        "state": {
-          "branch": null,
-          "revision": "ef2cebc37adcef71843f7d0cac46cce45c2acc40",
-          "version": "1.2.1"
+          "revision": "4f0034224a376d812253ebb10e51b34f4164fc21",
+          "version": "1.1.1"
         }
       },
       {
@@ -26,15 +17,6 @@
           "branch": null,
           "revision": "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
           "version": "1.0.3"
-        }
-      },
-      {
-        "package": "Resolution",
-        "repositoryURL": "https://github.com/heestand-xyz/Resolution",
-        "state": {
-          "branch": null,
-          "revision": "a37b4b7a1c04f0ebe980cb083b7b85fe99a0ea52",
-          "version": "1.0.1"
         }
       }
     ]
