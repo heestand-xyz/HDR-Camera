@@ -67,8 +67,8 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         
         captureSession.beginConfiguration()
         
-        if captureSession.canSetSessionPreset(.photo) {
-            captureSession.sessionPreset = .photo
+        if captureSession.canSetSessionPreset(.hd1920x1080) {
+            captureSession.sessionPreset = .hd1920x1080
         }
         captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true
 
@@ -137,6 +137,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
     private func captured(error: Error?) {
         guard error == nil else {
+            print("HDR Camera - Captured Error:", error!)
             competionHandler?(.failure(.captureFailedWithError(error!)))
             return
         }
@@ -144,6 +145,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
             competionHandler?(.failure(.captureFailed("No Images Found")))
             return
         }
+        print("HDR Camera - Captured Images at \(images.map(\.size))")
         defer { capturedImages = nil }
         guard !images.isEmpty else {
             competionHandler?(.failure(.captureFailed("Image Count is Zero")))
@@ -160,19 +162,19 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     // MARK: - Capture Delegate
     
     func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print("PHOTO willBeginCaptureFor")
+        print("HDR Camera - Will Begin Capture For")
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print("PHOTO willCapturePhotoFor")
+        print("HDR Camera - Will Capture Photo For")
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print("PHOTO didCapturePhotoFor")
+        print("HDR Camera - Did Capture Photo For")
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        print("PHOTO didFinishProcessingPhoto", photo.photoCount)
+        print("HDR Camera - Did Finish Processing Photo", photo.photoCount)
         if let imageData: Data = photo.fileDataRepresentation() {
             if let image: UIImage = UIImage(data: imageData){
                 capturedImages?.append(image)
@@ -181,6 +183,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+        print("HDR Camera - Did Finish Capture For")
         captured(error: error)
     }
     

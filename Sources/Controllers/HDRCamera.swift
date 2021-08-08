@@ -297,11 +297,13 @@ class HDRCamera: NSObject, ObservableObject {
         
         cameraPix.active = false
         
+        var timerReady: Bool = true
         animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
             self?.blurPix.radius = 0.1 * fraction
             self?.timeAnimation += 0.01 * fraction
         } done: { [weak self] in
             guard let self = self else { return }
+            guard timerReady else { return }
             self.timeAnimationTimer = Timer(timeInterval: 0.01, repeats: true, block: { [weak self] _ in
                 self?.timeAnimation += 0.01
             })
@@ -312,9 +314,10 @@ class HDRCamera: NSObject, ObservableObject {
         }
         
         func done() {
-            
+                        
             self.cameraPix.active = true
             
+            timerReady = false
             timeAnimationTimer?.invalidate()
             timeAnimationTimer = nil
             animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
@@ -332,6 +335,7 @@ class HDRCamera: NSObject, ObservableObject {
             case .success(let images):
                 if !self.check(images: images, id: "originals") {
                     completion(.failure(HDRError.md5CheckFailed("Originals")))
+                    done()
                     return
                 }
                 self.state = .generating
@@ -401,6 +405,12 @@ class HDRCamera: NSObject, ObservableObject {
     func captureFailed(error: Error) {
         state = .live
 //        fatalError("Capture Failed: \(error.localizedDescription)")
+        if case Camera.CameraError.captureFailedWithError(let error) = error {
+            guard error.localizedDescription != "Cannot Record" else {
+                alertCenter.alertInfo(title: "HDR Camera", message: "Photo Capture Failed")
+                return
+            }
+        }
         alertCenter.alertBug(error: error)
     }
     

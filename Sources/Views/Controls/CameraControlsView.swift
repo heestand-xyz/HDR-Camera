@@ -36,7 +36,7 @@ struct CameraControlsView: View {
                 .font(.system(size: 26))
                 
                 if hasMultiCameras {
-                    
+
                     Button(action: {
                         if case .back(let back) = hdrCamera.cameraLens {
                             switch back {
@@ -62,7 +62,7 @@ struct CameraControlsView: View {
                             .font(.system(size: 17))
                     })
                     .disabled(hdrCamera.cameraLens == .front)
-                
+
                 }
                 
                 Button(action: {
@@ -74,19 +74,19 @@ struct CameraControlsView: View {
                 })
                 .font(.system(size: 30))
                 
-                Button(action: {
-                    withAnimation {
-                        hdrCamera.cameraControl = .light
-                    }
-                }, label: {
-                    Image(systemName: hdrCamera.manualLight ? "sun.max.fill" : "sun.max")
-                })
-                .font(.system(size: 30))
+//                Button(action: {
+//                    withAnimation {
+//                        hdrCamera.cameraControl = .light
+//                    }
+//                }, label: {
+//                    Image(systemName: hdrCamera.manualLight ? "sun.max.fill" : "sun.max")
+//                })
+//                .font(.system(size: 30))
                 
             }
             .accentColor(.white)
         }
-        .frame(width: 50, height: hasMultiCameras ? 175 : 145)
+        .frame(width: 50, height: hasMultiCameras ? 145 : 115)
         .shadow(radius: 10)
     }
     
