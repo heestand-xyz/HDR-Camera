@@ -12,7 +12,7 @@ import SwiftUI
 
 class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
 
-    private let captureSession: AVCaptureSession = .init()
+    let captureSession: AVCaptureSession = .init()
     
     private var camera: AVCaptureDevice?
     private var input: AVCaptureInput?

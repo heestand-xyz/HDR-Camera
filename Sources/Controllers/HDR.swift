@@ -192,7 +192,7 @@ class HDR: ObservableObject {
         levelsPixBrightness0 = LevelsPIX()
         levelsPixBrightness0.name = "levelsPixBrightness0"
         levelsPixBrightness0.input = flipFlopPix0
-        levelsPixBrightness0.brightness = 1.5
+        levelsPixBrightness0.brightness = 1.25
         levelsPixBrightness1 = LevelsPIX()
         levelsPixBrightness1.name = "levelsPixBrightness1"
         levelsPixBrightness1.input = blendPix1

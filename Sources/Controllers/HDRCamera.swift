@@ -215,16 +215,16 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     @objc func didBecomeActive() {
-        
+        cameraPix.active = true
+//        camera.captureSession.startRunning()
     }
     
     @objc func willResignActive() {
-        
+        cameraPix.active = false
+//        camera.captureSession.stopRunning()
     }
     
-    @objc func willEnterForeground() {
-        
-    }
+    @objc func willEnterForeground() {}
     
     @objc func didEnterBackground() {
         capturedImages = []
