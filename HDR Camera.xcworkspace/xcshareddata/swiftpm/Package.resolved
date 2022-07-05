@@ -1,25 +1,77 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "PolyKit",
-        "repositoryURL": "https://github.com/heestand-xyz/PolyKit.git",
-        "state": {
-          "branch": null,
-          "revision": "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
-          "version": "1.0.3"
-        }
-      },
-      {
-        "package": "TextureMap",
-        "repositoryURL": "https://github.com/heestand-xyz/TextureMap",
-        "state": {
-          "branch": null,
-          "revision": "78af200767927e60e744b8b7e6c07671e1a7c27a",
-          "version": "0.5.3"
-        }
+  "pins" : [
+    {
+      "identity" : "asyncgraphics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/AsyncGraphics",
+      "state" : {
+        "revision" : "f865bb88466fb99b0dcd6e77a50aff3dde4f69a5",
+        "version" : "0.5.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "coregraphicsextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/CoreGraphicsExtensions",
+      "state" : {
+        "revision" : "89b30426f001988a878905d9cdcec0647dc17281",
+        "version" : "1.3.1"
+      }
+    },
+    {
+      "identity" : "multiviews",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/MultiViews.git",
+      "state" : {
+        "revision" : "066ff1db3966b37d56c5908197af9f1579b436e7",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "pixelcolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/PixelColor",
+      "state" : {
+        "revision" : "04d2444fc288edc5fa5cbfd85bbbc9128b63e6db",
+        "version" : "1.3.4"
+      }
+    },
+    {
+      "identity" : "polykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/PolyKit.git",
+      "state" : {
+        "revision" : "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "6b2aa2748a7881eebb9f84fb10c01293e15b52ca",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "texturemap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/TextureMap",
+      "state" : {
+        "revision" : "78af200767927e60e744b8b7e6c07671e1a7c27a",
+        "version" : "0.5.3"
+      }
+    },
+    {
+      "identity" : "videoframes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/VideoFrames",
+      "state" : {
+        "revision" : "403a11a70f412e3935303822cc7f420be0b73286",
+        "version" : "0.2.3"
+      }
+    }
+  ],
+  "version" : 2
 }

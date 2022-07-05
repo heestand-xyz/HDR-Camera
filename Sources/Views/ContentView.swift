@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-import RenderKit
-import PixelKit
 
 struct ContentView: View {
     
@@ -21,8 +19,8 @@ struct ContentView: View {
         ZStack {
             
             // Camera
-            NODERepView(node: hdrCamera.finalPix)
-                .ignoresSafeArea()
+//            NODERepView(node: hdrCamera.finalPix)
+//                .ignoresSafeArea()
             
             // Volume
             VolumeView()
