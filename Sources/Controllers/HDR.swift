@@ -231,21 +231,28 @@ class HDR: ObservableObject {
             flipFlopPix0.flip = .x
             flipFlopPix1.flip = .x
             flipFlopPix2.flip = .x
-            break
         case .landscapeLeft:
             print(">>>>> landscapeLeft")
-            flipFlopPix0.flip = .x
-            flipFlopPix1.flip = .x
-            flipFlopPix2.flip = .x
-            break
+            flipFlopPix0.flop = .none
+            flipFlopPix1.flop = .none
+            flipFlopPix2.flop = .none
+            flipFlopPix0.flip = .none
+            flipFlopPix1.flip = .none
+            flipFlopPix2.flip = .none
         case .landscapeRight:
             print(">>>>> landscapeRight")
+            flipFlopPix0.flop = .none
+            flipFlopPix1.flop = .none
+            flipFlopPix2.flop = .none
             flipFlopPix0.flip = .y
             flipFlopPix1.flip = .y
             flipFlopPix2.flip = .y
         default:
-            print(">>>>> default")
+            print(">>>>> default (\(UIDevice.current.orientation.rawValue))")
             #if targetEnvironment(simulator)
+            flipFlopPix0.flop = .none
+            flipFlopPix1.flop = .none
+            flipFlopPix2.flop = .none
             flipFlopPix0.flip = .y
             flipFlopPix1.flip = .y
             flipFlopPix2.flip = .y
@@ -253,9 +260,9 @@ class HDR: ObservableObject {
             flipFlopPix0.flop = .left
             flipFlopPix1.flop = .left
             flipFlopPix2.flop = .left
-            flipFlopPix0.flip = .x
-            flipFlopPix1.flip = .x
-            flipFlopPix2.flip = .x
+            flipFlopPix0.flip = .none
+            flipFlopPix1.flip = .none
+            flipFlopPix2.flip = .none
             #endif
         }
         

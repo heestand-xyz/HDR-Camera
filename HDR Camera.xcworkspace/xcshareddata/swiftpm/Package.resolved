@@ -9,6 +9,15 @@
           "revision": "9f1f488716b4810674b7e1cc69ddb61361d1ed77",
           "version": "1.0.3"
         }
+      },
+      {
+        "package": "TextureMap",
+        "repositoryURL": "https://github.com/heestand-xyz/TextureMap",
+        "state": {
+          "branch": null,
+          "revision": "78af200767927e60e744b8b7e6c07671e1a7c27a",
+          "version": "0.5.3"
+        }
       }
     ]
   },
