@@ -25,7 +25,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
     @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
     
-    var lens: HDRCamera.CameraLens = .back(.wide) {
+    var lens: CameraLens = .back(.wide) {
         didSet {
             setupInputs()
         }
@@ -90,7 +90,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         camera = nil
         input = nil
         
-        if let camera: AVCaptureDevice = lens.device {
+        if let camera: AVCaptureDevice = AVCaptureDevice.default(lens.deviceType, for: .video, position: lens == .front ? .front : .back) {
             self.camera = camera
             if let input = try? AVCaptureDeviceInput(device: camera),
                captureSession.canAddInput(input) {

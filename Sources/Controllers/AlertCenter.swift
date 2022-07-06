@@ -48,7 +48,7 @@ class AlertCenter: ObservableObject {
                 }
                 message += error.localizedDescription
             }
-            return message + "\n" + footer
+            return message// + "\n" + footer
         }
         var button: (String, () -> ())? {
             switch self {
@@ -61,30 +61,36 @@ class AlertCenter: ObservableObject {
         
         var footer: String { "v\(HDRCamera.version)" }
         
-        var alert: SwiftUI.Alert {
-            if let button = button {
-                return SwiftUI.Alert(title: Text(title), message: Text(message),
-                                     primaryButton: SwiftUI.Alert.Button.cancel(Text("Cancel")),
-                                     secondaryButton: SwiftUI.Alert.Button.default(Text(button.0), action: button.1))
-            } else {
-                return SwiftUI.Alert(title: Text(title), message: Text(message),
-                                     dismissButton: SwiftUI.Alert.Button.cancel(Text("Ok")))
-            }
-        }
+//        var alert: SwiftUI.Alert {
+//            if let button = button {
+//                return SwiftUI.Alert(title: Text(title), message: Text(message),
+//                                     primaryButton: SwiftUI.Alert.Button.cancel(Text("Cancel")),
+//                                     secondaryButton: SwiftUI.Alert.Button.default(Text(button.0), action: button.1))
+//            } else {
+//                return SwiftUI.Alert(title: Text(title), message: Text(message),
+//                                     dismissButton: SwiftUI.Alert.Button.cancel(Text("Ok")))
+//            }
+//        }
         
     }
     @Published var alert: Alert?
     
     func alertInfo(title: String? = nil, message: String) {
-        alert = .info(title, message)
+        withAnimation(.linear(duration: 0.25)) {
+            alert = .info(title, message)
+        }
     }
     
-    func alertAction(title: String? = nil, message: String, button: String, action: @escaping () -> ()) {
-        alert = .action(title, message, button, action)
-    }
+//    func alertAction(title: String? = nil, message: String, button: String, action: @escaping () -> ()) {
+//        withAnimation(.linear(duration: 0.25)) {
+//            alert = .action(title, message, button, action)
+//        }
+//    }
     
     func alertBug(title: String? = nil, message: String? = nil, error: Error) {
-        alert = .bug(title, message, error)
+        withAnimation(.linear(duration: 0.25)) {
+            alert = .bug(title, message, error)
+        }
     }
     
 }

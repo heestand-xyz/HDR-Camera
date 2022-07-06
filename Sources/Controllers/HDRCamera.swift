@@ -13,6 +13,7 @@ import MultiViews
 import AVKit
 import Combine
 import CryptoKit
+import AsyncGraphics
 
 class HDRCamera: NSObject, ObservableObject {
 
@@ -22,6 +23,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     let hdr: HDR = .init()
     let camera: Camera = .init()
+    
+    @Published var cameraGraphic: Graphic?
     
 //    let cameraPix: CameraPIX
 //    let levelsPix: LevelsPIX
@@ -81,71 +84,10 @@ class HDRCamera: NSObject, ObservableObject {
 //    #endif
     
     #if !targetEnvironment(macCatalyst)
-    enum CameraLens: Equatable {
-        enum Back: Equatable {
-            case ultraWide
-            case wide
-            case tele
-        }
-        case back(Back)
-        case front
-//        var value: CameraPIX.Camera {
-//            switch self {
-//            case .back(let back):
-//                switch back {
-//                case .ultraWide:
-//                    return .ultraWide
-//                case .wide:
-//                    return .back
-//                case .tele:
-//                    return .tele
-//                }
-//            case .front:
-//                return .front
-//            }
-//        }
-        var xFactor: CGFloat {
-            switch self {
-            case .back(let back):
-                switch back {
-                case .ultraWide:
-                    return 0.5
-                case .wide:
-                    return 1.0
-                case .tele:
-                    return 2.0
-                }
-            case .front:
-                return 1.0
-            }
-        }
-        static var hasUltrawide: Bool {
-            AVCaptureDevice.default(.builtInUltraWideCamera, for: AVMediaType.video, position: .back) != nil
-        }
-        static var hasTele: Bool {
-            AVCaptureDevice.default(.builtInTelephotoCamera, for: AVMediaType.video, position: .back) != nil
-        }
-        var device: AVCaptureDevice? {
-            AVCaptureDevice.default({
-                switch self {
-                case .back(let backLens):
-                    switch backLens {
-                    case .ultraWide:
-                        return .builtInUltraWideCamera
-                    case .wide:
-                        return .builtInWideAngleCamera
-                    case .tele:
-                        return .builtInTelephotoCamera
-                    }
-                case .front:
-                    return .builtInWideAngleCamera
-                }
-            }(), for: .video, position: self == .front ? .front : .back)
-        }
-    }
     @Published var cameraLens: CameraLens = .back(.wide) {
         didSet {
-//            cameraPix.camera = cameraLens.value
+            stopCamera()
+            startCamera(with: cameraLens)
             camera.lens = cameraLens
         }
     }
@@ -164,6 +106,8 @@ class HDRCamera: NSObject, ObservableObject {
             }
         }
     }
+    
+    private var cameraTask: Task<Void, Never>?
 
     // MARK: - Life Cycle -
     
@@ -185,6 +129,8 @@ class HDRCamera: NSObject, ObservableObject {
 //        finalPix.view.checker = false
         
         super.init()
+        
+        startCamera(with: cameraLens)
         
         listenToApp()
         
@@ -233,9 +179,38 @@ class HDRCamera: NSObject, ObservableObject {
     
     // MARK: - Camera
     
+    func startCamera(with cameraLens: CameraLens) {
+        
+        cameraTask = Task {
+            
+            do {
+            
+                for await graphic in try await Graphic.camera(cameraLens == .front ? .front : .back,
+                                                              device: cameraLens.deviceType,
+                                                              preset: .hd1920x1080) {
+                    let cameraGraphic: Graphic = try await graphic.rotatedRight()
+                    DispatchQueue.main.async { [weak self] in
+                        self?.cameraGraphic = cameraGraphic
+                    }
+                }
+                
+            } catch {
+                
+                DispatchQueue.main.async { [weak self] in
+                    self?.alertCenter.alertBug(message: "Camera Failed", error: error)
+                }
+            }
+        }
+    }
+    
+    func stopCamera() {
+        cameraTask?.cancel()
+        cameraGraphic = nil
+    }
+    
     func capturePhoto(with interaction: MVInteraction = .endedInside) {
         
-        print("HDRCamera capturePhoto")
+        print("HDR Camera capturePhoto")
         
         switch interaction {
         case .started:
@@ -261,6 +236,15 @@ class HDRCamera: NSObject, ObservableObject {
                 }
             }), forMode: .common)
             
+            capture { result in
+                switch result {
+                case .success(let hdrImage):
+                    self.captureDone(hdrImage: hdrImage)
+                case .failure(let error):
+                    self.captureFailed(error: error)
+                }
+            }
+            
         case .endedOutside:
             
             withAnimation(.easeInOut(duration: 0.25)) {
@@ -270,26 +254,13 @@ class HDRCamera: NSObject, ObservableObject {
             return
             
         }
-        
-//        guard let image: UIImage = finalPix.renderedImage else {
-//            alertCenter.alertInfo(message: "Photo could not be captured.")
-//            return
-//        }
-        
-        capture { result in
-            switch result {
-            case .success(let hdrImage):
-                self.captureDone(hdrImage: hdrImage)
-            case .failure(let error):
-                self.captureFailed(error: error)
-            }
-        }
-
     }
     
     func capture(completion: @escaping (Result<UIImage, Error>) -> ()) {
         
-        print("HDRCamera capture")
+        print("HDR Camera capture")
+        
+        stopCamera()
         
         state = .capture
         
@@ -311,7 +282,9 @@ class HDRCamera: NSObject, ObservableObject {
             captureAnimation = 1.0
         }
         
-        func done() {
+        @Sendable func done() {
+            
+            startCamera(with: cameraLens)
             
 //            self.cameraPix.active = true
             
@@ -325,35 +298,42 @@ class HDRCamera: NSObject, ObservableObject {
             withAnimation(.easeInOut(duration: 0.5)) {
                 captureAnimation = 0.0
             }
-            
         }
         
         camera.capture { result in
             switch result {
             case .success(let images):
-                if !self.check(images: images, id: "originals") {
-                    completion(.failure(HDRError.md5CheckFailed("Originals")))
-                    done()
-                    return
-                }
-                self.state = .generating
-                Task {
-                    do {
-                        let hdrImage: UIImage = try await self.hdr.generate(images: images)
+                DispatchQueue.global().async {
+                    if !self.check(images: images, id: "originals") {
                         DispatchQueue.main.async {
-                            completion(.success(hdrImage))
+                            completion(.failure(HDRError.md5CheckFailed("Originals")))
                             done()
                         }
-                    } catch {
-                        DispatchQueue.main.async {
-                            completion(.failure(error))
-                            done()
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        self.state = .generating
+                    }
+                    Task {
+                        do {
+                            let hdrImage: UIImage = try await self.hdr.generate(images: images)
+                            DispatchQueue.main.async {
+                                completion(.success(hdrImage))
+                                done()
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                                done()
+                            }
                         }
                     }
                 }
             case .failure(let error):
-                completion(.failure(error))
-                done()
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                    done()
+                }
             }
         }
         
@@ -402,14 +382,19 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     func captureFailed(error: Error) {
+
         state = .live
-//        fatalError("Capture Failed: \(error.localizedDescription)")
+
         if case Camera.CameraError.captureFailedWithError(let error) = error {
+
             guard error.localizedDescription != "Cannot Record" else {
+
                 alertCenter.alertInfo(title: "HDR Camera", message: "Photo Capture Failed")
+
                 return
             }
         }
+
         alertCenter.alertBug(error: error)
     }
     

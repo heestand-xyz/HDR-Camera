@@ -4,4 +4,7 @@
    <FileRef
       location = "container:HDR Camera.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:../../Packages/AsyncGraphics">
+   </FileRef>
 </Workspace>
