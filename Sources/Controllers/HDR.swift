@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AsyncGraphics
 
 class HDR: ObservableObject {
     
@@ -191,11 +192,14 @@ class HDR: ObservableObject {
     }
     
     enum HDRError: LocalizedError {
+        case noImages
         case timeout(Double)
         case badImageCount
         case renderFailed
         var errorDescription: String? {
             switch self {
+            case .noImages:
+                return "HDR No Images"
             case .timeout(let seconds):
                 return "HDR Timeout (\(seconds))"
             case .badImageCount:
@@ -206,7 +210,48 @@ class HDR: ObservableObject {
         }
     }
     
-    func generate(images: [UIImage]) async throws -> UIImage {
-        throw HDRError.timeout(-1)
+    func generate(images: [UIImage], cameraLens: CameraLens) async throws -> UIImage {
+        
+        guard !images.isEmpty else {
+            throw HDRError.noImages
+        }
+        
+        let firstImage: UIImage = images.first!
+        let firstHeight: CGFloat = firstImage.size.height * firstImage.scale
+        
+        let blurRadius: CGFloat = firstHeight * 0.25
+        
+        var graphics: [Graphic] = []
+        
+        for image in images {
+            var graphic: Graphic = try await .image(image).highBit()
+            graphic = try await graphic.rotatedRight()
+            if cameraLens == .front {
+                graphic = try await graphic.mirroredHorizontally()
+            }
+            graphics.append(graphic)
+        }
+        
+        var maskGraphics: [Graphic] = []
+        for (index, graphic) in graphics.enumerated() {
+            guard index > 0 else { continue }
+            let maskGraphic: Graphic = try await graphic.inverted().blurred(radius: blurRadius)
+            maskGraphics.append(maskGraphic)
+        }
+        
+        var maskedGraphics: [Graphic] = []
+        for (index, maskGraphic) in maskGraphics.enumerated() {
+            let graphic: Graphic = graphics[index + 1]
+            let maskedGraphic: Graphic = try await graphic.blended(with: maskGraphic, blendingMode: .multiply)
+            maskedGraphics.append(maskedGraphic)
+        }
+        
+        var hdrGraphic: Graphic = graphics.first!
+        for maskedGraphic in maskGraphics {
+            hdrGraphic = try await hdrGraphic.blended(with: maskedGraphic, blendingMode: .add)
+        }
+        hdrGraphic = try await hdrGraphic.gamma(0.7)
+        
+        return try await hdrGraphic.image
     }
 }

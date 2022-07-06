@@ -30,11 +30,6 @@ class HDRCamera: NSObject, ObservableObject {
     @Published var liveCameraGraphic: Graphic?
     @Published var frozenCameraGraphic: Graphic?
     
-//    let cameraPix: CameraPIX
-//    let levelsPix: LevelsPIX
-//    let blurPix: BlurPIX
-//    let finalPix: PIX
-    
     @Published var captureAnimation: CGFloat = 0.0
     
     var timeAnimationTimer: Timer?
@@ -58,34 +53,6 @@ class HDRCamera: NSObject, ObservableObject {
         case focus
     }
     @Published var cameraControl: CameraControl = .none
-    
-//    #if !targetEnvironment(macCatalyst)
-//    @Published var manualLight: Bool = false {
-//        didSet {
-//            cameraPix.manualExposure = manualLight
-//        }
-//    }
-//    @Published var lightExposure: CGFloat = 0.5 {
-//        didSet {
-//            cameraPix.exposure = lightExposure
-//        }
-//    }
-//    @Published var lightISO: CGFloat = 0.5 {
-//        didSet {
-//            cameraPix.iso = lightISO
-//        }
-//    }
-//    @Published var manualFocus: Bool = false {
-//        didSet {
-//            cameraPix.manualFocus = manualFocus
-//        }
-//    }
-//    @Published var focus: CGFloat = 0.5 {
-//        didSet {
-//            cameraPix.focus = focus
-//        }
-//    }
-//    #endif
     
     #if !targetEnvironment(macCatalyst)
     @Published var cameraLens: CameraLens = .back(.wide) {
@@ -121,21 +88,6 @@ class HDRCamera: NSObject, ObservableObject {
     
     override init() {
         
-//        cameraPix = CameraPIX()
-//        cameraPix.view.placement = .fill
-//
-//        levelsPix = LevelsPIX()
-//        levelsPix.input = cameraPix
-//        levelsPix.gamma = 0.5
-//
-//        blurPix = BlurPIX()
-//        blurPix.input = levelsPix
-//        blurPix.radius = 0.0
-//
-//        finalPix = blurPix
-//        finalPix.view.placement = .fill
-//        finalPix.view.checker = false
-        
         super.init()
         
         startCamera(with: cameraLens)
@@ -167,13 +119,11 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     @objc func didBecomeActive() {
-//        cameraPix.active = true
-// //        camera.captureSession.startRunning()
+        startCamera(with: cameraLens)
     }
     
     @objc func willResignActive() {
-//        cameraPix.active = false
-// //        camera.captureSession.stopRunning()
+        stopCamera()
     }
     
     @objc func willEnterForeground() {}
@@ -188,6 +138,8 @@ class HDRCamera: NSObject, ObservableObject {
     // MARK: - Camera
     
     func startCamera(with cameraLens: CameraLens) {
+        
+        cameraTask?.cancel()
         
         cameraTask = Task {
             
@@ -253,13 +205,18 @@ class HDRCamera: NSObject, ObservableObject {
                 }
             }), forMode: .common)
             
+            stopCamera()
+            
             capture { result in
+                
                 switch result {
                 case .success(let hdrImage):
                     self.captureDone(hdrImage: hdrImage)
                 case .failure(let error):
                     self.captureFailed(error: error)
                 }
+                
+                self.startCamera(with: self.cameraLens)
             }
             
         case .endedOutside:
@@ -277,14 +234,9 @@ class HDRCamera: NSObject, ObservableObject {
         
         print("HDR Camera capture")
         
-        stopCamera()
-        
         state = .capture
-        
-//        cameraPix.active = false
-        
+                
         animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
-//            self?.blurPix.radius = 0.1 * fraction
             self?.timeAnimation += 0.01 * fraction
         } done: { [weak self] in
             guard let self = self else { return }
@@ -300,15 +252,10 @@ class HDRCamera: NSObject, ObservableObject {
         
         @Sendable func done() {
             
-            startCamera(with: cameraLens)
-            
-//            self.cameraPix.active = true
-            
             timerReady = false
             timeAnimationTimer?.invalidate()
             timeAnimationTimer = nil
             animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
-//                self?.blurPix.radius = 0.1 - 0.1 * fraction
                 self?.timeAnimation += 0.01 * (1.0 - fraction)
             }
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -332,7 +279,7 @@ class HDRCamera: NSObject, ObservableObject {
                     }
                     Task {
                         do {
-                            let hdrImage: UIImage = try await self.hdr.generate(images: images)
+                            let hdrImage: UIImage = try await self.hdr.generate(images: images, cameraLens: self.cameraLens)
                             DispatchQueue.main.async {
                                 completion(.success(hdrImage))
                                 done()

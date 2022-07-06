@@ -23,28 +23,31 @@ struct ContentView: View {
                 
                 // Camera
                 if let graphic = hdrCamera.cameraGraphic {
-                    ZStack {
-                        GraphicView(graphic: graphic)
-                            .scaledToFill()
-                            .ignoresSafeArea()
-                            .blur(radius: hdrCamera.state == .live ? 0 : 15)
-                        if hdrCamera.state == .capture {
-                            VStack(spacing: 5) {
-                                Text("Capturing Photo")
-                                Text("Hold Camera Still")
-                                    .font(.footnote)
+                    GeometryReader { _ in
+                        ZStack {
+                            GraphicView(graphic: graphic)
+                                .scaledToFill()
+                                .ignoresSafeArea()
+                                .blur(radius: hdrCamera.state == .live ? 0 : 15)
+                                .brightness(hdrCamera.state == .capture ? 0.15 : 0)
+                            if hdrCamera.state == .capture {
+                                VStack(spacing: 5) {
+                                    Text("Capturing Photo")
+                                    Text("Hold Camera Still")
+                                        .font(.footnote)
+                                }
+                                .opacity(0.5)
+                            } else if hdrCamera.state == .generating {
+                                VStack(spacing: 5) {
+                                    Text("Editing Photo")
+                                    Text("in High Dynamic Range")
+                                        .font(.footnote)
+                                }
+                                .opacity(0.5)
                             }
-                            .opacity(0.5)
-                        } else if hdrCamera.state == .generating {
-                            VStack(spacing: 5) {
-                                Text("Editing Photo")
-                                Text("in High Dynamic Range")
-                                    .font(.footnote)
-                            }
-                            .opacity(0.5)
                         }
+                        .animation(.linear, value: hdrCamera.state)
                     }
-                    .animation(.linear, value: hdrCamera.state)
                 }
                 
                 // Volume

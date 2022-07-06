@@ -21,7 +21,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
     private let exposureValues: [Float] = [-2.0, 0.0, 2.0]
     private var capturedImages: [UIImage]?
-    private var competionHandler: ((Result<[UIImage], CameraError>) -> ())?
+    private var completionHandler: ((Result<[UIImage], CameraError>) -> ())?
     
     @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
     
@@ -131,31 +131,34 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
         
         capturedImages = []
-        competionHandler = completion
+        completionHandler = completion
         
     }
     
     private func captured(error: Error?) {
         guard error == nil else {
             print("HDR Camera - Captured Error:", error!)
-            competionHandler?(.failure(.captureFailedWithError(error!)))
+            completionHandler?(.failure(.captureFailedWithError(error!)))
             return
         }
         guard let images: [UIImage] = capturedImages else {
-            competionHandler?(.failure(.captureFailed("No Images Found")))
+            completionHandler?(.failure(.captureFailed("No Images Found")))
             return
         }
         print("HDR Camera - Captured Images at \(images.map(\.size))")
         defer { capturedImages = nil }
         guard !images.isEmpty else {
-            competionHandler?(.failure(.captureFailed("Image Count is Zero")))
+            completionHandler?(.failure(.captureFailed("Image Count is Zero")))
             return
         }
-        DispatchQueue.global(qos: .background).async {
-            let rotatedImages: [UIImage] = images.compactMap({ $0.rotated(byDegrees: 90) })
-            DispatchQueue.main.async {
-                self.competionHandler?(.success(rotatedImages))
-            }
+//        DispatchQueue.global(qos: .background).async {
+//            let rotatedImages: [UIImage] = images.compactMap({ $0.rotated(byDegrees: 90) })
+//            DispatchQueue.main.async {
+//                self.completionHandler?(.success(rotatedImages))
+//            }
+//        }
+        DispatchQueue.main.async {
+            self.completionHandler?(.success(images))
         }
     }
     
@@ -189,48 +192,32 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     
 }
 
-extension UIImage {
-
-//    func rotated(byDegrees degree: Double) -> UIImage {
-//        let radians = CGFloat(degree * .pi) / 180.0 as CGFloat
-//        let rotatedSize = self.size
-//        let scale = UIScreen.main.scale
-//        UIGraphicsBeginImageContextWithOptions(rotatedSize, false, scale)
-//        let bitmap = UIGraphicsGetCurrentContext()
-//        bitmap?.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
-//        bitmap?.rotate(by: radians)
-//        bitmap?.scaleBy(x: 1.0, y: -1.0)
-//        bitmap?.draw(
-//            self.cgImage!,
-//            in: CGRect.init(x: -self.size.width / 2, y: -self.size.height / 2 , width: self.size.width, height: self.size.height))
+//extension UIImage {
+//
+//    func rotated(byDegrees degrees: Float) -> UIImage? {
+//        rotate(radians: (degrees / 360) * .pi * 2)
+//    }
+//    
+//    func rotate(radians: Float) -> UIImage? {
+//        var newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: CGFloat(radians))).size
+//        // Trim off the extremely small float value to prevent core graphics from rounding it up
+//        newSize.width = floor(newSize.width)
+//        newSize.height = floor(newSize.height)
+//        
+//        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
+//        let context = UIGraphicsGetCurrentContext()!
+//        
+//        // Move origin to middle
+//        context.translateBy(x: newSize.width/2, y: newSize.height/2)
+//        // Rotate around middle
+//        context.rotate(by: CGFloat(radians))
+//        // Draw the image at its center
+//        self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
+//        
 //        let newImage = UIGraphicsGetImageFromCurrentImageContext()
 //        UIGraphicsEndImageContext()
-//        return newImage!
-    //    }
-    func rotated(byDegrees degrees: Float) -> UIImage? {
-        rotate(radians: (degrees / 360) * .pi * 2)
-    }
-    
-    func rotate(radians: Float) -> UIImage? {
-        var newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: CGFloat(radians))).size
-        // Trim off the extremely small float value to prevent core graphics from rounding it up
-        newSize.width = floor(newSize.width)
-        newSize.height = floor(newSize.height)
-        
-        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-        let context = UIGraphicsGetCurrentContext()!
-        
-        // Move origin to middle
-        context.translateBy(x: newSize.width/2, y: newSize.height/2)
-        // Rotate around middle
-        context.rotate(by: CGFloat(radians))
-        // Draw the image at its center
-        self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage
-    }
-    
-}
+//        
+//        return newImage
+//    }
+//    
+//}
