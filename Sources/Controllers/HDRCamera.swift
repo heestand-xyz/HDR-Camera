@@ -24,7 +24,11 @@ class HDRCamera: NSObject, ObservableObject {
     let hdr: HDR = .init()
     let camera: Camera = .init()
     
-    @Published var cameraGraphic: Graphic?
+    var cameraGraphic: Graphic? {
+        liveCameraGraphic ?? frozenCameraGraphic
+    }
+    @Published var liveCameraGraphic: Graphic?
+    @Published var frozenCameraGraphic: Graphic?
     
 //    let cameraPix: CameraPIX
 //    let levelsPix: LevelsPIX
@@ -87,7 +91,9 @@ class HDRCamera: NSObject, ObservableObject {
     @Published var cameraLens: CameraLens = .back(.wide) {
         didSet {
             stopCamera()
-            startCamera(with: cameraLens)
+            DispatchQueue.main.async {
+                self.startCamera(with: self.cameraLens)
+            }
             camera.lens = cameraLens
         }
     }
@@ -108,7 +114,9 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     private var cameraTask: Task<Void, Never>?
-
+    
+    private var timerReady: Bool = true
+    
     // MARK: - Life Cycle -
     
     override init() {
@@ -185,12 +193,20 @@ class HDRCamera: NSObject, ObservableObject {
             
             do {
             
-                for await graphic in try await Graphic.camera(cameraLens == .front ? .front : .back,
-                                                              device: cameraLens.deviceType,
-                                                              preset: .hd1920x1080) {
-                    let cameraGraphic: Graphic = try await graphic.rotatedRight()
+                for await graphic in try Graphic.camera(cameraLens == .front ? .front : .back,
+                                                        device: cameraLens.deviceType,
+                                                        preset: .hd1920x1080) {
+                    let cameraGraphic: Graphic = try await {
+                        switch cameraLens {
+                        case .front:
+                            return try await graphic.rotatedLeft()
+                        default:
+                            return try await graphic.rotatedRight()
+                        }
+                    }()
                     DispatchQueue.main.async { [weak self] in
-                        self?.cameraGraphic = cameraGraphic
+                        self?.liveCameraGraphic = cameraGraphic
+                        self?.frozenCameraGraphic = nil
                     }
                 }
                 
@@ -205,7 +221,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     func stopCamera() {
         cameraTask?.cancel()
-        cameraGraphic = nil
+        frozenCameraGraphic = liveCameraGraphic
+        liveCameraGraphic = nil
     }
     
     func capturePhoto(with interaction: MVInteraction = .endedInside) {
@@ -266,13 +283,12 @@ class HDRCamera: NSObject, ObservableObject {
         
 //        cameraPix.active = false
         
-        var timerReady: Bool = true
         animate(for: 0.5, ease: .easeInOut) { [weak self] fraction in
 //            self?.blurPix.radius = 0.1 * fraction
             self?.timeAnimation += 0.01 * fraction
         } done: { [weak self] in
             guard let self = self else { return }
-            guard timerReady else { return }
+            guard self.timerReady else { return }
             self.timeAnimationTimer = Timer(timeInterval: 0.01, repeats: true, block: { [weak self] _ in
                 self?.timeAnimation += 0.01
             })
@@ -323,8 +339,15 @@ class HDRCamera: NSObject, ObservableObject {
                             }
                         } catch {
                             DispatchQueue.main.async {
+                                #if DEBUG
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    completion(.failure(error))
+                                    done()
+                                }
+                                #else
                                 completion(.failure(error))
                                 done()
+                                #endif
                             }
                         }
                     }

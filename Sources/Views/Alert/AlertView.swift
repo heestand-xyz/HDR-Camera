@@ -42,7 +42,7 @@ struct AlertView: View {
                 .foregroundColor(.black)
                 .padding(10)
             })
-            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white))
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white).opacity(0.9))
         }
     }
 }

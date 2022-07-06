@@ -23,9 +23,28 @@ struct ContentView: View {
                 
                 // Camera
                 if let graphic = hdrCamera.cameraGraphic {
-                    GraphicView(graphic: graphic)
-                        .scaledToFill()
-                        .ignoresSafeArea()
+                    ZStack {
+                        GraphicView(graphic: graphic)
+                            .scaledToFill()
+                            .ignoresSafeArea()
+                            .blur(radius: hdrCamera.state == .live ? 0 : 15)
+                        if hdrCamera.state == .capture {
+                            VStack(spacing: 5) {
+                                Text("Capturing Photo")
+                                Text("Hold Camera Still")
+                                    .font(.footnote)
+                            }
+                            .opacity(0.5)
+                        } else if hdrCamera.state == .generating {
+                            VStack(spacing: 5) {
+                                Text("Editing Photo")
+                                Text("in High Dynamic Range")
+                                    .font(.footnote)
+                            }
+                            .opacity(0.5)
+                        }
+                    }
+                    .animation(.linear, value: hdrCamera.state)
                 }
                 
                 // Volume
@@ -38,15 +57,21 @@ struct ContentView: View {
                 })
                 .shadow(radius: 10)
                 
-                // Shutter
+                // Controls & Shutter
                 VStack {
                     Spacer()
-                    ShutterView(capture: { interaction in
-                        hdrCamera.capturePhoto(with: interaction)
-                    }, shutter: $hdrCamera.shutter)
-                    .rotationEffect(Angle(degrees: -90 * Double(hdrCamera.timeAnimation)))
-                    .frame(width: 80, height: 80)
-                    .shadow(radius: 10)
+                    ZStack {
+                        
+                        ControlsView(hdrCamera: hdrCamera)
+                        
+                        ShutterView(capture: { interaction in
+                            hdrCamera.capturePhoto(with: interaction)
+                        }, shutter: $hdrCamera.shutter)
+                        .rotationEffect(Angle(degrees: -90 * Double(hdrCamera.timeAnimation)))
+                        .frame(width: 80, height: 80)
+                        .shadow(radius: 10)
+                    }
+                    .frame(height: 80)
                     .padding(.bottom, 50)
                 }
             }

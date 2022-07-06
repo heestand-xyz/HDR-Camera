@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D33CBE512875B8FD00331C06 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33CBE502875B8FD00331C06 /* AlertView.swift */; };
 		D33CBE542875BD0100331C06 /* CameraLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33CBE532875BD0100331C06 /* CameraLens.swift */; };
+		D33CBE572875C3A800331C06 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33CBE562875C3A800331C06 /* ControlsView.swift */; };
 		D3FAE62A28747491000D0234 /* AsyncGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = D3FAE62928747491000D0234 /* AsyncGraphics */; };
 		E5443F7E26BEB06600B79A6A /* HDR_PreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5443F7D26BEB06600B79A6A /* HDR_PreviewApp.swift */; };
 		E5443F8026BEB06600B79A6A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5443F7F26BEB06600B79A6A /* ContentView.swift */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		D33CBE502875B8FD00331C06 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		D33CBE532875BD0100331C06 /* CameraLens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLens.swift; sourceTree = "<group>"; };
+		D33CBE562875C3A800331C06 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
 		E5443F7B26BEB06600B79A6A /* HDR Preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HDR Preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5443F7D26BEB06600B79A6A /* HDR_PreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDR_PreviewApp.swift; sourceTree = "<group>"; };
 		E5443F7F26BEB06600B79A6A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -106,6 +108,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		D33CBE552875C39400331C06 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				D33CBE562875C3A800331C06 /* ControlsView.swift */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
 		E5443F7C26BEB06600B79A6A /* HDR Preview */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				E5535FED262365A70043F745 /* ContentView.swift */,
+				D33CBE552875C39400331C06 /* Controls */,
 				D33CBE4F2875B8F300331C06 /* Alert */,
 				E5535FDC262365A70043F745 /* Capture */,
 				E5535FEE262365A70043F745 /* Photo */,
@@ -357,6 +368,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D33CBE572875C3A800331C06 /* ControlsView.swift in Sources */,
 				E5638EF225E3F70500C4E54F /* Camera.swift in Sources */,
 				E5CF13EB25E41C7000081A19 /* HDR.swift in Sources */,
 				E5535FF5262365A70043F745 /* HDRCamera.swift in Sources */,
