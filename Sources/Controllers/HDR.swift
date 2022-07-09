@@ -219,7 +219,7 @@ class HDR: ObservableObject {
         let firstImage: UIImage = images.first!
         let firstHeight: CGFloat = firstImage.size.height * firstImage.scale
         
-        let blurRadius: CGFloat = firstHeight * 0.25
+        let blurRadius: CGFloat = firstHeight * 0.01
         
         var graphics: [Graphic] = []
         
@@ -235,7 +235,7 @@ class HDR: ObservableObject {
         var maskGraphics: [Graphic] = []
         for (index, graphic) in graphics.enumerated() {
             guard index > 0 else { continue }
-            let maskGraphic: Graphic = try await graphic.inverted().blurred(radius: blurRadius)
+            let maskGraphic: Graphic = try await graphic.inverted().blurred(radius: blurRadius).gamma(0.5)
             maskGraphics.append(maskGraphic)
         }
         

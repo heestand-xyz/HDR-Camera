@@ -335,7 +335,9 @@ class HDRCamera: NSObject, ObservableObject {
     
     func captureDone(hdrImage: UIImage) {
         
+        #if !DEBUG
         UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
+        #endif
 
         let id: UUID = UUID()
         withAnimation(.easeInOut) {
