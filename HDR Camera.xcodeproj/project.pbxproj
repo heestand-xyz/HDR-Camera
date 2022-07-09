@@ -655,8 +655,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/heestand-xyz/AsyncGraphics";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.5.1;
+				kind = exactVersion;
+				version = 0.5.2;
 			};
 		};
 		E5638F0225E4015600C4E54F /* XCRemoteSwiftPackageReference "PolyKit" */ = {
