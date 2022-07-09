@@ -19,7 +19,7 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
 
     private var photoOutput: AVCapturePhotoOutput?
     
-    private let exposureValues: [Float] = [-2.0, 0.0, 2.0]
+    private let exposureValues: [Float] = [-2.0, -0.5, 0.5, 2.0]
     private var capturedImages: [UIImage]?
     private var completionHandler: ((Result<[UIImage], CameraError>) -> ())?
     

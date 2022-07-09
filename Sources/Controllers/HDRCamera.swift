@@ -84,6 +84,8 @@ class HDRCamera: NSObject, ObservableObject {
     
     private var timerReady: Bool = true
     
+    @Published var appActive: Bool = true
+    
     // MARK: - Life Cycle -
     
     override init() {
@@ -119,18 +121,22 @@ class HDRCamera: NSObject, ObservableObject {
     }
     
     @objc func didBecomeActive() {
-        startCamera(with: cameraLens)
+        appActive = true
     }
     
     @objc func willResignActive() {
-        stopCamera()
+        appActive = false
     }
     
-    @objc func willEnterForeground() {}
+    @objc func willEnterForeground() {
+        startCamera(with: cameraLens)
+    }
     
     @objc func didEnterBackground() {
         capturedImages = []
         animatedImageIDs = []
+        stopCamera()
+        frozenCameraGraphic = nil
     }
     
     #endif
@@ -335,9 +341,7 @@ class HDRCamera: NSObject, ObservableObject {
     
     func captureDone(hdrImage: UIImage) {
         
-        #if !DEBUG
         UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
-        #endif
 
         let id: UUID = UUID()
         withAnimation(.easeInOut) {

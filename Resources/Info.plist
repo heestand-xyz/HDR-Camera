@@ -24,6 +24,8 @@
 	<string>Capture photos with the camera.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save your photo in the Photos library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Edit your captured photo in the Photos library.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

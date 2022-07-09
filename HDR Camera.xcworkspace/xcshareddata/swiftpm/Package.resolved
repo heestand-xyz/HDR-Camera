@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "TextureMap",
-        "repositoryURL": "https://github.com/heestand-xyz/TextureMap",
-        "state": {
-          "branch": null,
-          "revision": "78af200767927e60e744b8b7e6c07671e1a7c27a",
-          "version": "0.5.3"
-        }
-      },
-      {
         "package": "VideoFrames",
         "repositoryURL": "https://github.com/heestand-xyz/VideoFrames",
         "state": {
