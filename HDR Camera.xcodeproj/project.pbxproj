@@ -11,12 +11,7 @@
 		D33CBE542875BD0100331C06 /* CameraLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33CBE532875BD0100331C06 /* CameraLens.swift */; };
 		D33CBE572875C3A800331C06 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33CBE562875C3A800331C06 /* ControlsView.swift */; };
 		D3FAE62A28747491000D0234 /* AsyncGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = D3FAE62928747491000D0234 /* AsyncGraphics */; };
-		E5443F7E26BEB06600B79A6A /* HDR_PreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5443F7D26BEB06600B79A6A /* HDR_PreviewApp.swift */; };
-		E5443F8026BEB06600B79A6A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5443F7F26BEB06600B79A6A /* ContentView.swift */; };
-		E5443F8226BEB06700B79A6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5443F8126BEB06700B79A6A /* Assets.xcassets */; };
-		E5443F8526BEB06700B79A6A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5443F8426BEB06700B79A6A /* Preview Assets.xcassets */; };
 		E5443F8926BEB06F00B79A6A /* HDR.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CF13EA25E41C7000081A19 /* HDR.swift */; };
-		E5443F8B26BEB08100B79A6A /* HDRPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5443F8A26BEB08100B79A6A /* HDRPreview.swift */; };
 		E5443F8D26BEB1B200B79A6A /* PixelKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5443F8C26BEB1B200B79A6A /* PixelKit */; };
 		E5535FF5262365A70043F745 /* HDRCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FD5262365A70043F745 /* HDRCamera.swift */; };
 		E5535FF7262365A70043F745 /* AlertCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5535FD7262365A70043F745 /* AlertCenter.swift */; };
@@ -44,11 +39,6 @@
 		D33CBE532875BD0100331C06 /* CameraLens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLens.swift; sourceTree = "<group>"; };
 		D33CBE562875C3A800331C06 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
 		E5443F7B26BEB06600B79A6A /* HDR Preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HDR Preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E5443F7D26BEB06600B79A6A /* HDR_PreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDR_PreviewApp.swift; sourceTree = "<group>"; };
-		E5443F7F26BEB06600B79A6A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		E5443F8126BEB06700B79A6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E5443F8426BEB06700B79A6A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		E5443F8A26BEB08100B79A6A /* HDRPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRPreview.swift; sourceTree = "<group>"; };
 		E5535FD5262365A70043F745 /* HDRCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HDRCamera.swift; sourceTree = "<group>"; };
 		E5535FD7262365A70043F745 /* AlertCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertCenter.swift; sourceTree = "<group>"; };
 		E5535FDD262365A70043F745 /* CaptureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureView.swift; sourceTree = "<group>"; };
@@ -114,26 +104,6 @@
 				D33CBE562875C3A800331C06 /* ControlsView.swift */,
 			);
 			path = Controls;
-			sourceTree = "<group>";
-		};
-		E5443F7C26BEB06600B79A6A /* HDR Preview */ = {
-			isa = PBXGroup;
-			children = (
-				E5443F7D26BEB06600B79A6A /* HDR_PreviewApp.swift */,
-				E5443F8A26BEB08100B79A6A /* HDRPreview.swift */,
-				E5443F7F26BEB06600B79A6A /* ContentView.swift */,
-				E5443F8126BEB06700B79A6A /* Assets.xcassets */,
-				E5443F8326BEB06700B79A6A /* Preview Content */,
-			);
-			path = "HDR Preview";
-			sourceTree = "<group>";
-		};
-		E5443F8326BEB06700B79A6A /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				E5443F8426BEB06700B79A6A /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		E5535FD4262365A70043F745 /* Controllers */ = {
@@ -224,7 +194,6 @@
 			children = (
 				E5554EC525DAA68C00398F19 /* Sources */,
 				E5554EC425DAA68400398F19 /* Resources */,
-				E5443F7C26BEB06600B79A6A /* HDR Preview */,
 				E5950D8B25DAA35900644D2F /* Products */,
 				E5E1CB3625DAE500008A86C8 /* Frameworks */,
 			);
@@ -337,8 +306,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5443F8526BEB06700B79A6A /* Preview Assets.xcassets in Resources */,
-				E5443F8226BEB06700B79A6A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,10 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5443F8026BEB06600B79A6A /* ContentView.swift in Sources */,
 				E5443F8926BEB06F00B79A6A /* HDR.swift in Sources */,
-				E5443F7E26BEB06600B79A6A /* HDR_PreviewApp.swift in Sources */,
-				E5443F8B26BEB08100B79A6A /* HDRPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
