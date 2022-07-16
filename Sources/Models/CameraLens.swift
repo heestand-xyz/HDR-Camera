@@ -18,9 +18,7 @@ enum CameraLens: Equatable, Hashable, CaseIterable {
     }
     
     case back(Back)
-    
     case front
-    
     
     var description: String {
         switch self {
@@ -35,12 +33,6 @@ enum CameraLens: Equatable, Hashable, CaseIterable {
         }
     }
     
-    static var hasUltrawide: Bool {
-        AVCaptureDevice.default(.builtInUltraWideCamera, for: AVMediaType.video, position: .back) != nil
-    }
-    static var hasTele: Bool {
-        AVCaptureDevice.default(.builtInTelephotoCamera, for: AVMediaType.video, position: .back) != nil
-    }
     var deviceType: AVCaptureDevice.DeviceType {
         switch self {
         case .back(let backLens):

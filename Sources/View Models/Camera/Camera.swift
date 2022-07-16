@@ -77,20 +77,20 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         
         captureSession.commitConfiguration()
         captureSession.startRunning()
-        
     }
-    
     
     private func setupInputs() {
         
-        if let intput = input {
-            captureSession.removeInput(intput)
+        if let input = input {
+            captureSession.removeInput(input)
         }
         
         camera = nil
         input = nil
         
-        if let camera: AVCaptureDevice = AVCaptureDevice.default(lens.deviceType, for: .video, position: lens == .front ? .front : .back) {
+        if let camera: AVCaptureDevice = AVCaptureDevice.default(lens.deviceType,
+                                                                 for: .video,
+                                                                 position: lens == .front ? .front : .back) {
             self.camera = camera
             if let input = try? AVCaptureDeviceInput(device: camera),
                captureSession.canAddInput(input) {
@@ -117,12 +117,6 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
         let exposureSettings = exposureValues.map(makeAutoExposureSettings)
         
-//        let exposureSettings = [
-//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(0.01), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
-//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(0.1), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
-//            AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: CMTime(value: CMTimeValue(1.0), timescale: CMTimeScale(NSEC_PER_SEC)), iso: 100),
-//        ]
-        
         let photoSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
                                                           processedFormat: [AVVideoCodecKey : AVVideoCodecType.jpeg],
                                                           bracketedSettings: exposureSettings)
@@ -132,7 +126,6 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         
         capturedImages = []
         completionHandler = completion
-        
     }
     
     private func captured(error: Error?) {
@@ -151,12 +144,6 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
             completionHandler?(.failure(.captureFailed("Image Count is Zero")))
             return
         }
-//        DispatchQueue.global(qos: .background).async {
-//            let rotatedImages: [UIImage] = images.compactMap({ $0.rotated(byDegrees: 90) })
-//            DispatchQueue.main.async {
-//                self.completionHandler?(.success(rotatedImages))
-//            }
-//        }
         DispatchQueue.main.async {
             self.completionHandler?(.success(images))
         }
@@ -189,35 +176,4 @@ class Camera: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
         print("HDR Camera - Did Finish Capture For")
         captured(error: error)
     }
-    
 }
-
-//extension UIImage {
-//
-//    func rotated(byDegrees degrees: Float) -> UIImage? {
-//        rotate(radians: (degrees / 360) * .pi * 2)
-//    }
-//    
-//    func rotate(radians: Float) -> UIImage? {
-//        var newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: CGFloat(radians))).size
-//        // Trim off the extremely small float value to prevent core graphics from rounding it up
-//        newSize.width = floor(newSize.width)
-//        newSize.height = floor(newSize.height)
-//        
-//        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-//        let context = UIGraphicsGetCurrentContext()!
-//        
-//        // Move origin to middle
-//        context.translateBy(x: newSize.width/2, y: newSize.height/2)
-//        // Rotate around middle
-//        context.rotate(by: CGFloat(radians))
-//        // Draw the image at its center
-//        self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
-//        
-//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        
-//        return newImage
-//    }
-//    
-//}

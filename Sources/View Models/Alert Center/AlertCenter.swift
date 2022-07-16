@@ -1,9 +1,9 @@
 //
 //  AlertCenter.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-13.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import Foundation
@@ -25,6 +25,7 @@ class AlertCenter: ObservableObject {
                 return "HDR Camera Bug"
             }
         }
+        
         var title: String {
             switch self {
             case .info(let title, _):
@@ -35,6 +36,7 @@ class AlertCenter: ObservableObject {
                 return title ?? defaultTitle
             }
         }
+        
         var message: String {
             var message: String = ""
             switch self {
@@ -50,29 +52,10 @@ class AlertCenter: ObservableObject {
             }
             return message// + "\n" + footer
         }
-        var button: (String, () -> ())? {
-            switch self {
-            case .action(_, _, let button, let action):
-                return (button, action)
-            default:
-                return nil
-            }
-        }
         
-        var footer: String { "v\(HDRCamera.version)" }
-        
-//        var alert: SwiftUI.Alert {
-//            if let button = button {
-//                return SwiftUI.Alert(title: Text(title), message: Text(message),
-//                                     primaryButton: SwiftUI.Alert.Button.cancel(Text("Cancel")),
-//                                     secondaryButton: SwiftUI.Alert.Button.default(Text(button.0), action: button.1))
-//            } else {
-//                return SwiftUI.Alert(title: Text(title), message: Text(message),
-//                                     dismissButton: SwiftUI.Alert.Button.cancel(Text("Ok")))
-//            }
-//        }
-        
+        var footer: String { "v\(MainViewModel.version)" }
     }
+        
     @Published var alert: Alert?
     
     func alertInfo(title: String? = nil, message: String) {
@@ -81,16 +64,9 @@ class AlertCenter: ObservableObject {
         }
     }
     
-//    func alertAction(title: String? = nil, message: String, button: String, action: @escaping () -> ()) {
-//        withAnimation(.linear(duration: 0.25)) {
-//            alert = .action(title, message, button, action)
-//        }
-//    }
-    
     func alertBug(title: String? = nil, message: String? = nil, error: Error) {
         withAnimation(.linear(duration: 0.25)) {
             alert = .bug(title, message, error)
         }
     }
-    
 }

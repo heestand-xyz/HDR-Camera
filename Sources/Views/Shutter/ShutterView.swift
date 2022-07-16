@@ -1,9 +1,9 @@
 //
 //  ShutterView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-13.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import SwiftUI
@@ -23,9 +23,13 @@ struct ShutterView: View {
     @Binding var shutter: ShutterOpen
     
     var body: some View {
+       
         GeometryReader { geo in
+        
             ZStack {
+            
                 ForEach(0..<6) { index in
+                
                     Poly(count: 3, relativeCornerRadius: 0.25)
                         .scaleEffect(0.75)
                         .rotationEffect(Angle(degrees: (Double(index) / 6.0) * 360 - 90))
@@ -34,6 +38,7 @@ struct ShutterView: View {
                         .offset(x: cos((CGFloat(index) / 6.0) * .pi * 2 + .pi * 0.5) * geo.size.height * shutter.rawValue * 0.35,
                                 y: sin((CGFloat(index) / 6.0) * .pi * 2 + .pi * 0.5) * geo.size.height * shutter.rawValue * 0.35)
                 }
+         
                 MVInteractView { interaction in
                     capture(interaction)
                 }

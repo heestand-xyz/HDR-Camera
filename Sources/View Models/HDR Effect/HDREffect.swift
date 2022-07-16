@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import AsyncGraphics
 
-class HDR: ObservableObject {
+class HDREffect: ObservableObject {
     
     enum HDRError: LocalizedError {
         case noImages
@@ -91,10 +91,6 @@ class HDR: ObservableObject {
             .gamma(0.5)
             .saturated(0.75)
         
-//        let black: Graphic = try await .color(.black, resolution: maskedGraphics.first!.resolution, options: .highBit)
-//        let x: [Graphic] = [black] + maskGraphics
-//        let y: [Graphic] = [hdrGraphic] + maskedGraphics
-//        return try await [graphics.hStack(), x.hStack(), y.hStack()].vStack().image
         return try await hdrGraphic.image
     }
 }

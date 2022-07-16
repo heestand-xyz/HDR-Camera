@@ -1,9 +1,9 @@
 //
 //  VolumeView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-14.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import SwiftUI
@@ -16,5 +16,4 @@ struct VolumeView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: MPVolumeView, context: Context) {}
-    
 }

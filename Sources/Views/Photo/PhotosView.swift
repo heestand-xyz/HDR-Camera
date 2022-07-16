@@ -1,9 +1,9 @@
 //
 //  PhotosView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-14.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ struct PhotosView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @ObservedObject var hdrCamera: HDRCamera
+    @ObservedObject var main: MainViewModel
     
     @State var showShareSheet: Bool = false
     
@@ -34,33 +34,13 @@ struct PhotosView: View {
             
             Spacer()
             
-//            PagesView(pageIndex: $pageIndex) {
-//                hdrCamera.capturedImages.map { pack in
-//                    (id: pack.id,
-//                     view: PhotoView(image: pack.image)
-//                        #if DEBUG
-//                        .overlay(Text(pack.id.uuidString).padding().background(Color.black))
-//                        #endif
-//                     )
-//                }
-//            }
-            
             TabView(selection: $pageIndex) {
-                ForEach(hdrCamera.capturedImages, id: \.id) { pack in
+                ForEach(main.capturedImages, id: \.id) { pack in
                     PhotoView(image: pack.image)
-                        .tag(hdrCamera.capturedImages.map(\.id).firstIndex(of: pack.id) ?? 0)
+                        .tag(main.capturedImages.map(\.id).firstIndex(of: pack.id) ?? 0)
                 }
             }
             .tabViewStyle(PageTabViewStyle())
-            
-//            HStack {
-//                ForEach(hdrCamera.capturedImages, id: \.id) { pack in
-//                    Circle()
-//                        .frame(width: 7.5, height: 7.5)
-//                        .opacity(pageIndex == hdrCamera.capturedImages.firstIndex(where: { $0.id == pack.id }) ? 1.0 : 0.25)
-//                }
-//            }
-//            .opacity(hdrCamera.capturedImages.count > 1 ? 1.0 : 0.0)
             
             HStack {
                 
@@ -89,20 +69,18 @@ struct PhotosView: View {
             
         }
         .onAppear {
-            pageIndex = hdrCamera.capturedImages.count - 1
+            pageIndex = main.capturedImages.count - 1
         }
         .sheet(isPresented: $showShareSheet, content: {
-            if pageIndex >= 0 && pageIndex < hdrCamera.capturedImages.count {
-                ShareView(image: hdrCamera.capturedImages[pageIndex].image)
+            if pageIndex >= 0 && pageIndex < main.capturedImages.count {
+                ShareView(image: main.capturedImages[pageIndex].image)
             }
         })
-        
     }
-    
 }
 
 struct PhotosView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotosView(hdrCamera: HDRCamera())
+        PhotosView(main: MainViewModel())
     }
 }

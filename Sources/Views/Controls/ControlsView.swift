@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ControlsView: View {
     
-    @ObservedObject var hdrCamera: HDRCamera
+    @ObservedObject var main: MainViewModel
 
     var body: some View {
         
@@ -18,7 +18,7 @@ struct ControlsView: View {
             /// Camera
             ZStack {
                 
-                if hdrCamera.cameraLens != .front {
+                if main.cameraLens != .front {
                     
                     if CameraLens.back(.tele).isSupported || CameraLens.back(.ultraWide).isSupported {
                         
@@ -30,16 +30,16 @@ struct ControlsView: View {
                                     return true
                                 }
                             guard !supportedBackCameras.isEmpty else { return }
-                            guard let currentIndex = supportedBackCameras.firstIndex(of: hdrCamera.cameraLens) else { return }
+                            guard let currentIndex = supportedBackCameras.firstIndex(of: main.cameraLens) else { return }
                             let nextIndex = (currentIndex + 1) % supportedBackCameras.count
-                            hdrCamera.cameraLens = supportedBackCameras[nextIndex]
+                            main.cameraLens = supportedBackCameras[nextIndex]
                         } label: {
                             EmptyView()
                             ZStack {
                                 Circle()
                                     .stroke(lineWidth: 3)
-                                Text(hdrCamera.cameraLens.description)
-                                    .font(.system(size: hdrCamera.cameraLens == .back(.ultraWide) ? 12 : 15, weight: .bold, design: .monospaced))
+                                Text(main.cameraLens.description)
+                                    .font(.system(size: main.cameraLens == .back(.ultraWide) ? 12 : 15, weight: .bold, design: .monospaced))
                             }
                             .frame(width: 40, height: 40)
                         }
@@ -55,10 +55,10 @@ struct ControlsView: View {
             
             /// Flip Camera
             Button {
-                if hdrCamera.cameraLens == .front {
-                    hdrCamera.cameraLens = .back(.wide)
+                if main.cameraLens == .front {
+                    main.cameraLens = .back(.wide)
                 } else {
-                    hdrCamera.cameraLens = .front
+                    main.cameraLens = .front
                 }
             } label: {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
@@ -67,13 +67,13 @@ struct ControlsView: View {
             .foregroundColor(.white)
             .shadow(radius: 5)
         }
-        .disabled(hdrCamera.state != .live)
-        .opacity(hdrCamera.state == .live ? 1.0 : 0.0)
+        .disabled(main.state != .live)
+        .opacity(main.state == .live ? 1.0 : 0.0)
     }
 }
 
 struct ControlsView_Previews: PreviewProvider {
     static var previews: some View {
-        ControlsView(hdrCamera: HDRCamera())
+        ControlsView(main: MainViewModel())
     }
 }

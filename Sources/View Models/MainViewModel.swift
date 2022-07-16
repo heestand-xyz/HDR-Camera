@@ -1,9 +1,9 @@
 //
-//  HDRCamera.swift
-//  Layer Camera
+//  MainViewModel.swift
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-13.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import Foundation
@@ -15,14 +15,35 @@ import Combine
 import CryptoKit
 import AsyncGraphics
 
-class HDRCamera: NSObject, ObservableObject {
+class MainViewModel: NSObject, ObservableObject {
 
+    // MARK: State
+    
+    enum State {
+        case live
+        case capture
+        case generating
+    }
+    
+    @Published var state: State = .live
+    
+    // MARK: Version
+    
     static let version: String = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
 
+    // MARK: Alert Center
+    
     let alertCenter: AlertCenter = .init()
     
-    let hdr: HDR = .init()
-    let camera: Camera = .init()
+    // MARK: Camera
+    
+    private let camera: Camera = .init()
+
+    // MARK: HDR Effect
+    
+    private let hdrEffect: HDREffect = .init()
+    
+    // MARK: Graphics
     
     var cameraGraphic: Graphic? {
         liveCameraGraphic ?? frozenCameraGraphic
@@ -30,29 +51,27 @@ class HDRCamera: NSObject, ObservableObject {
     @Published var liveCameraGraphic: Graphic?
     @Published var frozenCameraGraphic: Graphic?
     
+    // MARK: Capture
+    
     @Published var captureAnimation: CGFloat = 0.0
     
-    var timeAnimationTimer: Timer?
+    // MARK: Time
+    
+    private var timeAnimationTimer: Timer?
     @Published var timeAnimation: CGFloat = 0.0
 
+    private var timerReady: Bool = true
+    
+    // MARK: Orientation
+    
     @Published var orientation: UIDeviceOrientation = UIDevice.current.orientation
     
-    enum State {
-        case live
-        case capture
-        case generating
-    }
-    @Published var state: State = .live
+    // MARK: Captured Images
     
     @Published private(set) var capturedImages: [(id: UUID, image: UIImage)] = []
     @Published var animatedImageIDs: [UUID] = []
 
-    enum CameraControl {
-        case none
-        case light
-        case focus
-    }
-    @Published var cameraControl: CameraControl = .none
+    // MARK: Camera Lens
     
     #if !targetEnvironment(macCatalyst)
     @Published var cameraLens: CameraLens = .back(.wide) {
@@ -66,9 +85,15 @@ class HDRCamera: NSObject, ObservableObject {
     }
     #endif
     
+    // MARK: Shutter
+    
     @Published var shutter: ShutterOpen = .mid
     
+    // MARK: Cancellables
+    
     var cancellables: [AnyCancellable] = []
+    
+    // MARK: Error
     
     enum HDRError: LocalizedError {
         case md5CheckFailed(String)
@@ -80,9 +105,11 @@ class HDRCamera: NSObject, ObservableObject {
         }
     }
     
+    // MARK: Tasks
+    
     private var cameraTask: Task<Void, Never>?
     
-    private var timerReady: Bool = true
+    // MARK: App
     
     @Published var appActive: Bool = true
     
@@ -154,6 +181,7 @@ class HDRCamera: NSObject, ObservableObject {
                 for await graphic in try Graphic.camera(cameraLens == .front ? .front : .back,
                                                         device: cameraLens.deviceType,
                                                         preset: .hd1920x1080) {
+                    
                     let cameraGraphic: Graphic = try await {
                         switch cameraLens {
                         case .front:
@@ -162,6 +190,7 @@ class HDRCamera: NSObject, ObservableObject {
                             return try await graphic.rotatedRight()
                         }
                     }()
+                    
                     DispatchQueue.main.async { [weak self] in
                         self?.liveCameraGraphic = cameraGraphic
                         self?.frozenCameraGraphic = nil
@@ -182,6 +211,8 @@ class HDRCamera: NSObject, ObservableObject {
         frozenCameraGraphic = liveCameraGraphic
         liveCameraGraphic = nil
     }
+    
+    // MARK: - Capture
     
     func capturePhoto(with interaction: MVInteraction = .endedInside) {
         
@@ -269,7 +300,10 @@ class HDRCamera: NSObject, ObservableObject {
             }
         }
         
-        camera.capture { result in
+        camera.capture { [weak self] result in
+            
+            guard let self = self else { return }
+            
             switch result {
             case .success(let images):
                 DispatchQueue.global().async {
@@ -285,7 +319,7 @@ class HDRCamera: NSObject, ObservableObject {
                     }
                     Task {
                         do {
-                            let hdrImage: UIImage = try await self.hdr.generate(images: images, cameraLens: self.cameraLens)
+                            let hdrImage: UIImage = try await self.hdrEffect.generate(images: images, cameraLens: self.cameraLens)
                             DispatchQueue.main.async {
                                 completion(.success(hdrImage))
                                 done()
@@ -315,6 +349,52 @@ class HDRCamera: NSObject, ObservableObject {
         
     }
     
+    func captureDone(hdrImage: UIImage) {
+        
+        UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
+        
+        let id: UUID = UUID()
+        withAnimation(.easeInOut) {
+            capturedImages.append((id: id, image: hdrImage))
+        }
+        RunLoop.current.add(Timer(timeInterval: 0.1, repeats: false, block: { _ in
+            withAnimation(.easeInOut(duration: 0.35)) {
+                self.animatedImageIDs.append(id)
+            }
+        }), forMode: .common)
+        
+        state = .live
+        
+    }
+    
+    @objc func savedImage(_ image: UIImage,
+                          didFinishSavingWithError error: Error?,
+                          contextInfo: UnsafeRawPointer) {
+        guard error == nil else {
+            alertCenter.alertBug(message: "Save of photo failed.", error: error!)
+            return
+        }
+    }
+    
+    func captureFailed(error: Error) {
+        
+        state = .live
+        
+        if case Camera.CameraError.captureFailedWithError(let error) = error {
+            
+            guard error.localizedDescription != "Cannot Record" else {
+                
+                alertCenter.alertInfo(title: "HDR Camera", message: "Photo Capture Failed")
+                
+                return
+            }
+        }
+        
+        alertCenter.alertBug(error: error)
+    }
+    
+    // MARK: - Check
+    
     var lastMd5s: [String: [String]] = [:]
     
     func check(images: [UIImage], id: String) -> Bool {
@@ -339,85 +419,9 @@ class HDRCamera: NSObject, ObservableObject {
         return Insecure.MD5.hash(data: data).map { String(format: "%02hhx", $0) }.joined()
     }
     
-    func captureDone(hdrImage: UIImage) {
-        
-        UIImageWriteToSavedPhotosAlbum(hdrImage, self, #selector(savedImage), nil)
-
-        let id: UUID = UUID()
-        withAnimation(.easeInOut) {
-            capturedImages.append((id: id, image: hdrImage))
-        }
-        RunLoop.current.add(Timer(timeInterval: 0.1, repeats: false, block: { _ in
-            withAnimation(.easeInOut(duration: 0.35)) {
-                self.animatedImageIDs.append(id)
-            }
-        }), forMode: .common)
-        
-        state = .live
-        
-    }
-    
-    func captureFailed(error: Error) {
-
-        state = .live
-
-        if case Camera.CameraError.captureFailedWithError(let error) = error {
-
-            guard error.localizedDescription != "Cannot Record" else {
-
-                alertCenter.alertInfo(title: "HDR Camera", message: "Photo Capture Failed")
-
-                return
-            }
-        }
-
-        alertCenter.alertBug(error: error)
-    }
-    
-    @objc func savedImage(_ image: UIImage,
-                          didFinishSavingWithError error: Error?,
-                          contextInfo: UnsafeRawPointer) {
-        guard error == nil else {
-            alertCenter.alertBug(message: "Save of photo failed.", error: error!)
-            return
-        }
-    }
-    
     // MARK: - Capture with Volume Button
 
     @objc func updateVolume() {
         capturePhoto()
     }
-    
-}
-
-extension HDRCamera {
-    
-    enum AnimationEase {
-        case linear
-        case easeIn
-        case easeInOut
-        case easeOut
-    }
-    
-    func animate(for duration: CGFloat, ease: AnimationEase = .linear, loop: @escaping (CGFloat) -> (), done: (() -> ())? = nil) {
-        let startTime = Date()
-        RunLoop.current.add(Timer(timeInterval: 1.0 / Double(UIScreen.main.maximumFramesPerSecond), repeats: true, block: { t in
-            let elapsedTime = CGFloat(-startTime.timeIntervalSinceNow)
-            let fraction = min(elapsedTime / duration, 1.0)
-            var easeFraction = fraction
-            switch ease {
-            case .linear: break
-            case .easeIn: easeFraction = cos(fraction * .pi / 2 - .pi) + 1
-            case .easeInOut: easeFraction = cos(fraction * .pi - .pi) / 2 + 0.5
-            case .easeOut: easeFraction = cos(fraction * .pi / 2 - .pi / 2)
-            }
-            loop(easeFraction)
-            if fraction == 1.0 {
-                done?()
-                t.invalidate()
-            }
-        }), forMode: .common)
-    }
-    
 }

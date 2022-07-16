@@ -1,9 +1,9 @@
 //
 //  ShareView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-14.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import Foundation
@@ -18,5 +18,4 @@ struct ShareView: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-    
 }
