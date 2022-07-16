@@ -1,18 +1,17 @@
 //
 //  ContentView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-13.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import SwiftUI
-import RenderKit
-import PixelKit
+import AsyncGraphics
 
 struct ContentView: View {
     
-    @ObservedObject var hdrCamera: HDRCamera
+    @ObservedObject var main: MainViewModel
     @ObservedObject var alertCenter: AlertCenter
     
     @State var showPhoto: Bool = false
@@ -20,56 +19,85 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             
-            // Camera
-            NODERepView(node: hdrCamera.finalPix)
-                .ignoresSafeArea()
-            
-            // Volume
-            VolumeView()
-                .opacity(0.001)
-            
-            // Capture
-            CaptureView(hdrCamera: hdrCamera, showPhoto: {
-                showPhoto = true
-            })
-            .shadow(radius: 10)
-            
-//            #if !targetEnvironment(macCatalyst)
-//            // Controls
-//            GeometryReader { geo in
-//                ZStack(alignment: .leading) {
-//                    Color.clear
-//                    CameraControlsView(hdrCamera: hdrCamera)
-//                        .offset(x: hdrCamera.cameraControl == .none ? 0 : -geo.size.width - 10)
-//                    CameraLightControlView(hdrCamera: hdrCamera)
-//                        .offset(x: hdrCamera.cameraControl == .light ? 0 : -geo.size.width - 10)
-//                    CameraFocusControlView(hdrCamera: hdrCamera)
-//                        .offset(x: hdrCamera.cameraControl == .focus ? 0 : -geo.size.width - 10)
-//                }
-//                .padding()
-//            }
-//            #endif
-            
-            // Shutter
-            VStack {
-                Spacer()
-                ShutterView(capture: { interaction in
-                    hdrCamera.capturePhoto(with: interaction)
-                }, shutter: $hdrCamera.shutter)
-                    .rotationEffect(Angle(degrees: -90 * Double(hdrCamera.timeAnimation)))
-                    .frame(width: 80, height: 80)
-                    .shadow(radius: 10)
+            ZStack {
+                
+                // Camera
+                if let graphic = main.cameraGraphic {
+                    
+                    ZStack {
+                    
+                        GeometryReader { _ in
+                        
+                            GraphicView(graphic: graphic)
+                                .scaledToFill()
+                                .ignoresSafeArea()
+                                .blur(radius: main.appActive && main.state == .live ? 0 : 15)
+                                .brightness(main.state == .capture ? 0.15 : 0)
+                        }
+                        
+                        if main.state == .capture {
+                            
+                            VStack(spacing: 5) {
+                                Text("Capturing Photo")
+                                Text("Hold Camera Still")
+                                    .font(.footnote)
+                            }
+                            .opacity(0.5)
+                            
+                        } else if main.state == .generating {
+                        
+                            VStack(spacing: 5) {
+                                Text("Editing Photo")
+                                Text("in High Dynamic Range")
+                                    .font(.footnote)
+                            }
+                            .opacity(0.5)
+                        }
+                    }
+                    .animation(.linear, value: main.state)
+                    .animation(.linear, value: main.appActive)
+                }
+                
+                // Volume
+                VolumeView()
+                    .opacity(0.001)
+                
+                // Capture
+                CaptureView(main: main, showPhoto: {
+                    showPhoto = true
+                })
+                .shadow(radius: 10)
+                
+                // Controls & Shutter
+                VStack {
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        
+                        ControlsView(main: main)
+                        
+                        ShutterView(capture: { interaction in
+                            main.capturePhoto(with: interaction)
+                        }, shutter: $main.shutter)
+                        .rotationEffect(Angle(degrees: -90 * Double(main.timeAnimation)))
+                        .frame(width: 80, height: 80)
+                        .shadow(radius: 10)
+                    }
+                    .frame(height: 80)
                     .padding(.bottom, 50)
+                }
             }
+            .blur(radius: alertCenter.alert != nil ? 10 : 0)
             
-        }
-        .alert(isPresented: Binding<Bool>(get: {
-            alertCenter.alert != nil
-        }, set: { show in
-            if !show {
-                alertCenter.alert = nil
+            if let alert = alertCenter.alert {
+                AlertView(alert: alert) {
+                    withAnimation(.linear(duration: 0.25)) {
+                        alertCenter.alert = nil
+                    }
+                }
             }
-        }), content: { alertCenter.alert!.alert })
+        }
         .sheet(isPresented: Binding<Bool>(get: {
             showPhoto
         }, set: { active in
@@ -78,15 +106,14 @@ struct ContentView: View {
             }
         })) {
             if showPhoto {
-                PhotosView(hdrCamera: hdrCamera)
+                PhotosView(main: main)
             }
         }
     }
-    
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(hdrCamera: HDRCamera(), alertCenter: AlertCenter())
+        ContentView(main: MainViewModel(), alertCenter: AlertCenter())
     }
 }

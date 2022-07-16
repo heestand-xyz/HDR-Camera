@@ -1,16 +1,16 @@
 //
 //  CaptureView.swift
-//  Layer Camera
+//  HDR Camera
 //
 //  Created by Anton Heestand on 2021-02-14.
-//  Copyright © 2021 Hexagons. All rights reserved.
+//  Copyright © 2022 Anton Heestand. All rights reserved.
 //
 
 import SwiftUI
 
 struct CaptureView: View {
     
-    @ObservedObject var hdrCamera: HDRCamera
+    @ObservedObject var main: MainViewModel
     
     let showPhoto: () -> ()
     
@@ -22,8 +22,10 @@ struct CaptureView: View {
             
             Color.clear
             
-            ForEach(hdrCamera.capturedImages.filter({ !hdrCamera.animatedImageIDs.contains($0.id) }), id: \.id) { pack in
+            ForEach(main.capturedImages.filter({ !main.animatedImageIDs.contains($0.id) }), id: \.id) { pack in
+              
                 GeometryReader { geo in
+                
                     Image(uiImage: pack.image)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -36,8 +38,11 @@ struct CaptureView: View {
             Button(action: {
                 showPhoto()
             }, label: {
+
                 ZStack {
-                    ForEach(hdrCamera.capturedImages.filter({ hdrCamera.animatedImageIDs.contains($0.id) }), id: \.id) { pack in
+
+                    ForEach(main.capturedImages.filter({ main.animatedImageIDs.contains($0.id) }), id: \.id) { pack in
+
                         Image(uiImage: pack.image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -64,13 +69,13 @@ struct CaptureView: View {
     }
     
     func index(id: UUID) -> Int {
-        hdrCamera.capturedImages.count - (hdrCamera.capturedImages.firstIndex(where: { $0.id == id }) ?? 0) - 1
+        main.capturedImages.count - (main.capturedImages.firstIndex(where: { $0.id == id }) ?? 0) - 1
     }
     
 }
 
 struct CaptureView_Previews: PreviewProvider {
     static var previews: some View {
-        CaptureView(hdrCamera: HDRCamera(), showPhoto: {})
+        CaptureView(main: MainViewModel(), showPhoto: {})
     }
 }
