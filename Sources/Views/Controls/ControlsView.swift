@@ -23,21 +23,28 @@ struct ControlsView: View {
                     if CameraLens.back(.tele).isSupported || CameraLens.back(.ultraWide).isSupported {
                         
                         Button {
+                           
                             let supportedBackCameras: [CameraLens] = CameraLens.allCases
                                 .filter { camera in
                                     guard camera != .front else { return false }
                                     guard camera.isSupported else { return false }
                                     return true
                                 }
+                            
                             guard !supportedBackCameras.isEmpty else { return }
+                            
                             guard let currentIndex = supportedBackCameras.firstIndex(of: main.cameraLens) else { return }
                             let nextIndex = (currentIndex + 1) % supportedBackCameras.count
+                            
                             main.cameraLens = supportedBackCameras[nextIndex]
+                            
                         } label: {
-                            EmptyView()
+                            
                             ZStack {
+                            
                                 Circle()
                                     .stroke(lineWidth: 3)
+                                
                                 Text(main.cameraLens.description)
                                     .font(.system(size: main.cameraLens == .back(.ultraWide) ? 12 : 15, weight: .bold, design: .monospaced))
                             }
