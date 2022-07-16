@@ -32,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D30294F82882C82800C42B5A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D33CBE502875B8FD00331C06 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		D33CBE532875BD0100331C06 /* CameraLens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLens.swift; sourceTree = "<group>"; };
 		D33CBE562875C3A800331C06 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
@@ -207,6 +208,7 @@
 		E5950D7D25DAA35800644D2F = {
 			isa = PBXGroup;
 			children = (
+				D30294F82882C82800C42B5A /* README.md */,
 				E5554EC525DAA68C00398F19 /* Sources */,
 				E5554EC425DAA68400398F19 /* Resources */,
 				E5950D8B25DAA35900644D2F /* Products */,
@@ -645,16 +647,16 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/heestand-xyz/PolyKit.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.3;
+				kind = exactVersion;
+				version = 1.0.3;
 			};
 		};
 		E5975DE325DBCE8900CA6C0B /* XCRemoteSwiftPackageReference "MultiViews" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/heestand-xyz/MultiViews.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.0;
+				kind = exactVersion;
+				version = 1.6.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
