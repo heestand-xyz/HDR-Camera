@@ -212,7 +212,6 @@
 				E5554EC525DAA68C00398F19 /* Sources */,
 				E5554EC425DAA68400398F19 /* Resources */,
 				E5950D8B25DAA35900644D2F /* Products */,
-				E5E1CB3625DAE500008A86C8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -223,13 +222,6 @@
 				E5443F7B26BEB06600B79A6A /* HDR Preview.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		E5E1CB3625DAE500008A86C8 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
